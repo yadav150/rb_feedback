@@ -3,6 +3,10 @@
 // PUBLIC FEEDBACK — SCRIPT.JS
 // =========================================
 
+// =========================================
+// FIREBASE SERVICE IMPORT
+// =========================================
+
 import {
     getReel,
     saveFeedback
