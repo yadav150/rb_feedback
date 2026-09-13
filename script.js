@@ -1,15 +1,22 @@
-/* =========================================
-   RUDRA BHAKTI — FEEDBACK FRONTEND
-   PHASE 1
-========================================= */
+// =========================================
+// RUDRA BHAKTI
+// FEEDBACK FORM
+// FIREBASE INTEGRATION
+// =========================================
+
+import { database } from "./firebase.js";
+
+import {
+    ref,
+    push,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
 
 
-/* =========================================
-   DYNAMIC REEL DATA
-
-   Temporary prototype data.
-   Firebase will replace this later.
-========================================= */
+// =========================================
+// DYNAMIC REEL DATA
+// Temporary until Admin Panel is connected
+// =========================================
 
 const reelData = {
     reelId: "RB-001",
@@ -24,9 +31,9 @@ const reelData = {
 };
 
 
-/* =========================================
-   DOM ELEMENTS
-========================================= */
+// =========================================
+// DOM ELEMENTS
+// =========================================
 
 const userDetailsStep =
     document.getElementById("user-details-step");
@@ -40,6 +47,12 @@ const thankYouStep =
 const progressSteps =
     document.querySelectorAll(".progress-step");
 
+const userDetailsForm =
+    document.getElementById("user-details-form");
+
+const feedbackForm =
+    document.getElementById("feedback-form");
+
 const reelTitle =
     document.getElementById("reel-title");
 
@@ -49,10 +62,16 @@ const reelDescription =
 const reelThumbnail =
     document.getElementById("reel-thumbnail");
 
+const writtenFeedback =
+    document.getElementById("written-feedback");
 
-/* =========================================
-   INITIALIZE REEL
-========================================= */
+const characterCount =
+    document.getElementById("character-count");
+
+
+// =========================================
+// INITIALIZE REEL
+// =========================================
 
 function initializeReel() {
 
@@ -67,16 +86,15 @@ function initializeReel() {
 
     reelThumbnail.alt =
         `${reelData.title} preview`;
-
 }
 
 
 initializeReel();
 
 
-/* =========================================
-   STEP NAVIGATION
-========================================= */
+// =========================================
+// STEP NAVIGATION
+// =========================================
 
 function showStep(step) {
 
@@ -100,47 +118,41 @@ function showStep(step) {
     }
 
 
-    progressSteps.forEach(
-        (item, index) => {
+    progressSteps.forEach((item, index) => {
 
-            item.classList.toggle(
-                "active",
-                index === step - 1
-            );
+        item.classList.toggle(
+            "active",
+            index === step - 1
+        );
 
-        }
-    );
+    });
 
 
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
-
 }
 
 
-/* =========================================
-   USER DETAILS
-========================================= */
+// =========================================
+// USER DETAILS
+// =========================================
 
-document
-    .getElementById("user-details-form")
-    .addEventListener(
-        "submit",
-        function (event) {
+userDetailsForm.addEventListener(
+    "submit",
+    function (event) {
 
-            event.preventDefault();
+        event.preventDefault();
 
-            showStep(2);
-
-        }
-    );
+        showStep(2);
+    }
+);
 
 
-/* =========================================
-   TEXT TO SPEECH
-========================================= */
+// =========================================
+// TEXT TO SPEECH
+// =========================================
 
 let activeSpeechButton = null;
 
@@ -202,9 +214,7 @@ document
 
 
                 speech.lang = "hi-IN";
-
                 speech.rate = 0.88;
-
                 speech.pitch = 1;
 
 
@@ -216,7 +226,6 @@ document
 
                     activeSpeechButton =
                         this;
-
                 };
 
 
@@ -226,9 +235,7 @@ document
                         "speaking"
                     );
 
-                    activeSpeechButton =
-                        null;
-
+                    activeSpeechButton = null;
                 };
 
 
@@ -238,36 +245,22 @@ document
                         "speaking"
                     );
 
-                    activeSpeechButton =
-                        null;
-
+                    activeSpeechButton = null;
                 };
 
 
                 speechSynthesis.speak(
                     speech
                 );
-
             }
         );
 
     });
 
 
-/* =========================================
-   CHARACTER COUNT
-========================================= */
-
-const writtenFeedback =
-    document.getElementById(
-        "written-feedback"
-    );
-
-const characterCount =
-    document.getElementById(
-        "character-count"
-    );
-
+// =========================================
+// CHARACTER COUNT
+// =========================================
 
 writtenFeedback.addEventListener(
     "input",
@@ -275,125 +268,195 @@ writtenFeedback.addEventListener(
 
         characterCount.textContent =
             `${this.value.length} / 500`;
+    }
+);
+
+
+// =========================================
+// GET SELECTED VALUE
+// =========================================
+
+function getSelectedValue(name) {
+
+    const selected =
+        document.querySelector(
+            `input[name="${name}"]:checked`
+        );
+
+    return selected
+        ? selected.value
+        : null;
+}
+
+
+// =========================================
+// FEEDBACK SUBMISSION
+// =========================================
+
+feedbackForm.addEventListener(
+    "submit",
+    async function (event) {
+
+        event.preventDefault();
+
+
+        const reelLike =
+            getSelectedValue("reel_like");
+
+        const reelFeeling =
+            getSelectedValue("reel_feeling");
+
+        const moreContent =
+            getSelectedValue("more_content");
+
+        const rating =
+            getSelectedValue("rating");
+
+
+        // Required questions
+
+        if (
+            !reelLike ||
+            !reelFeeling ||
+            !moreContent ||
+            !rating
+        ) {
+
+            alert(
+                "Please answer all required questions before submitting."
+            );
+
+            return;
+        }
+
+
+        // =====================================
+        // USER INFORMATION
+        // =====================================
+
+        const nameInput =
+            document
+                .getElementById("user-name")
+                .value
+                .trim();
+
+        const emailInput =
+            document
+                .getElementById("user-email")
+                .value
+                .trim();
+
+
+        const userName =
+            nameInput || "Anonymous";
+
+        const userEmail =
+            emailInput || "anonymous@gmail.com";
+
+
+        // =====================================
+        // FEEDBACK OBJECT
+        // =====================================
+
+        const feedbackData = {
+
+            reelId:
+                reelData.reelId,
+
+            reelTitle:
+                reelData.title,
+
+
+            user: {
+
+                name:
+                    userName,
+
+                email:
+                    userEmail
+            },
+
+
+            answers: {
+
+                reelLike:
+                    reelLike,
+
+                reelFeeling:
+                    reelFeeling,
+
+                moreContent:
+                    moreContent,
+
+                rating:
+                    rating,
+
+                writtenFeedback:
+                    writtenFeedback.value.trim()
+            },
+
+
+            metadata: {
+
+                submittedAt:
+                    serverTimestamp(),
+
+                pageUrl:
+                    window.location.href,
+
+                userAgent:
+                    navigator.userAgent
+            }
+
+        };
+
+
+        // =====================================
+        // SAVE TO FIREBASE
+        // =====================================
+
+        try {
+
+            const feedbackRef =
+                ref(
+                    database,
+                    `feedback/${reelData.reelId}`
+                );
+
+
+            await push(
+                feedbackRef,
+                feedbackData
+            );
+
+
+            // =================================
+            // SUCCESS
+            // =================================
+
+            showStep(3);
+
+
+        } catch (error) {
+
+            console.error(
+                "Feedback submission failed:",
+                error
+            );
+
+
+            alert(
+                "Something went wrong while submitting your feedback. Please try again."
+            );
+        }
 
     }
 );
 
 
-/* =========================================
-   FEEDBACK SUBMISSION
-========================================= */
-
-document
-    .getElementById("feedback-form")
-    .addEventListener(
-        "submit",
-        function (event) {
-
-            event.preventDefault();
-
-
-            const requiredGroups = [
-                "reel_like",
-                "reel_feeling",
-                "more_content",
-                "rating"
-            ];
-
-
-            let complete = true;
-
-
-            requiredGroups.forEach(
-                group => {
-
-                    const selected =
-                        document.querySelector(
-                            `input[name="${group}"]:checked`
-                        );
-
-
-                    if (!selected) {
-                        complete = false;
-                    }
-
-                }
-            );
-
-
-            if (!complete) {
-
-                alert(
-                    "Please answer all required questions before submitting."
-                );
-
-                return;
-            }
-
-
-            /*
-                Later this object will be sent
-                to Firebase Realtime Database.
-            */
-
-            const feedbackData = {
-
-                reelId: reelData.reelId,
-
-                name:
-                    document.getElementById(
-                        "user-name"
-                    ).value.trim(),
-
-                email:
-                    document.getElementById(
-                        "user-email"
-                    ).value.trim(),
-
-                reelLike:
-                    document.querySelector(
-                        'input[name="reel_like"]:checked'
-                    ).value,
-
-                reelFeeling:
-                    document.querySelector(
-                        'input[name="reel_feeling"]:checked'
-                    ).value,
-
-                moreContent:
-                    document.querySelector(
-                        'input[name="more_content"]:checked'
-                    ).value,
-
-                rating:
-                    document.querySelector(
-                        'input[name="rating"]:checked'
-                    ).value,
-
-                writtenFeedback:
-                    writtenFeedback.value.trim(),
-
-                submittedAt:
-                    new Date().toISOString()
-
-            };
-
-
-            console.log(
-                "Feedback payload:",
-                feedbackData
-            );
-
-
-            showStep(3);
-
-        }
-    );
-
-
-/* =========================================
-   FACEBOOK SHARE
-========================================= */
+// =========================================
+// FACEBOOK SHARE
+// =========================================
 
 document
     .getElementById(
