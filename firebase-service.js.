@@ -1,0 +1,516 @@
+import {
+    getDatabase,
+    ref,
+    get,
+    set,
+    push,
+    update,
+    remove
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+import { app } from "firebase.js";
+
+
+// =========================================
+// FIREBASE REALTIME DATABASE
+// =========================================
+
+const database = getDatabase(app);
+
+
+// =========================================
+// DATABASE PATHS
+// =========================================
+
+const DATABASE_PATHS = {
+    reels: "reels",
+    feedback: "feedback_responses"
+};
+
+
+// =========================================
+// ERROR HANDLER
+// =========================================
+
+function getDatabaseErrorMessage(error) {
+
+    const code =
+        error?.code || "";
+
+    switch (code) {
+
+        case "PERMISSION_DENIED":
+        case "permission-denied":
+            return "You do not have permission to perform this action.";
+
+        case "NETWORK_ERROR":
+        case "network-request-failed":
+            return "Network connection failed. Please try again.";
+
+        default:
+            return "Unable to complete the database request. Please try again.";
+    }
+}
+
+
+// =========================================
+// GET ALL REELS
+// =========================================
+
+async function getReels() {
+
+    try {
+
+        const reelsRef =
+            ref(
+                database,
+                DATABASE_PATHS.reels
+            );
+
+        const snapshot =
+            await get(reelsRef);
+
+
+        if (!snapshot.exists()) {
+            return {};
+        }
+
+
+        return snapshot.val();
+
+    } catch (error) {
+
+        console.error(
+            "Get reels error:",
+            error
+        );
+
+        throw new Error(
+            getDatabaseErrorMessage(error)
+        );
+    }
+}
+
+
+// =========================================
+// GET SINGLE REEL
+// =========================================
+
+async function getReel(reelId) {
+
+    if (!reelId) {
+        throw new Error(
+            "A valid Reel ID is required."
+        );
+    }
+
+
+    try {
+
+        const reelRef =
+            ref(
+                database,
+                `${DATABASE_PATHS.reels}/${reelId}`
+            );
+
+        const snapshot =
+            await get(reelRef);
+
+
+        if (!snapshot.exists()) {
+            return null;
+        }
+
+
+        return snapshot.val();
+
+    } catch (error) {
+
+        console.error(
+            "Get Reel error:",
+            error
+        );
+
+        throw new Error(
+            getDatabaseErrorMessage(error)
+        );
+    }
+}
+
+
+// =========================================
+// CREATE REEL
+// =========================================
+
+async function createReel(reelData) {
+
+    if (
+        !reelData ||
+        typeof reelData !== "object"
+    ) {
+        throw new Error(
+            "Invalid Reel data."
+        );
+    }
+
+
+    try {
+
+        const reelsRef =
+            ref(
+                database,
+                DATABASE_PATHS.reels
+            );
+
+
+        const newReelRef =
+            push(reelsRef);
+
+
+        const firebaseKey =
+            newReelRef.key;
+
+
+        const reel = {
+
+            ...reelData,
+
+            firebaseKey,
+
+            createdAt:
+                Date.now(),
+
+            updatedAt:
+                Date.now(),
+
+            status:
+                "active"
+
+        };
+
+
+        await set(
+            newReelRef,
+            reel
+        );
+
+
+        return {
+            key: firebaseKey,
+            data: reel
+        };
+
+    } catch (error) {
+
+        console.error(
+            "Create Reel error:",
+            error
+        );
+
+        throw new Error(
+            getDatabaseErrorMessage(error)
+        );
+    }
+}
+
+
+// =========================================
+// UPDATE REEL
+// =========================================
+
+async function updateReel(
+    reelId,
+    changes
+) {
+
+    if (!reelId) {
+
+        throw new Error(
+            "A valid Reel ID is required."
+        );
+    }
+
+
+    if (
+        !changes ||
+        typeof changes !== "object"
+    ) {
+
+        throw new Error(
+            "Invalid Reel update data."
+        );
+    }
+
+
+    try {
+
+        const reelRef =
+            ref(
+                database,
+                `${DATABASE_PATHS.reels}/${reelId}`
+            );
+
+
+        await update(
+            reelRef,
+            {
+                ...changes,
+                updatedAt: Date.now()
+            }
+        );
+
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Update Reel error:",
+            error
+        );
+
+        throw new Error(
+            getDatabaseErrorMessage(error)
+        );
+    }
+}
+
+
+// =========================================
+// DELETE REEL
+// =========================================
+
+async function deleteReel(
+    reelId
+) {
+
+    if (!reelId) {
+
+        throw new Error(
+            "A valid Reel ID is required."
+        );
+    }
+
+
+    try {
+
+        const reelRef =
+            ref(
+                database,
+                `${DATABASE_PATHS.reels}/${reelId}`
+            );
+
+
+        await remove(
+            reelRef
+        );
+
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Delete Reel error:",
+            error
+        );
+
+        throw new Error(
+            getDatabaseErrorMessage(error)
+        );
+    }
+}
+
+
+// =========================================
+// SAVE FEEDBACK RESPONSE
+// =========================================
+
+async function saveFeedback(
+    feedbackData
+) {
+
+    if (
+        !feedbackData ||
+        typeof feedbackData !== "object"
+    ) {
+
+        throw new Error(
+            "Invalid feedback data."
+        );
+    }
+
+
+    if (!feedbackData.reelId) {
+
+        throw new Error(
+            "Reel ID is required."
+        );
+    }
+
+
+    try {
+
+        const feedbackRef =
+            ref(
+                database,
+                DATABASE_PATHS.feedback
+            );
+
+
+        const newFeedbackRef =
+            push(feedbackRef);
+
+
+        const responseId =
+            newFeedbackRef.key;
+
+
+        const response = {
+
+            ...feedbackData,
+
+            responseId,
+
+            submittedAt:
+                Date.now()
+
+        };
+
+
+        await set(
+            newFeedbackRef,
+            response
+        );
+
+
+        return {
+            id: responseId,
+            data: response
+        };
+
+    } catch (error) {
+
+        console.error(
+            "Save feedback error:",
+            error
+        );
+
+        throw new Error(
+            getDatabaseErrorMessage(error)
+        );
+    }
+}
+
+
+// =========================================
+// GET ALL FEEDBACK
+// =========================================
+
+async function getFeedback() {
+
+    try {
+
+        const feedbackRef =
+            ref(
+                database,
+                DATABASE_PATHS.feedback
+            );
+
+        const snapshot =
+            await get(feedbackRef);
+
+
+        if (!snapshot.exists()) {
+            return {};
+        }
+
+
+        return snapshot.val();
+
+    } catch (error) {
+
+        console.error(
+            "Get feedback error:",
+            error
+        );
+
+        throw new Error(
+            getDatabaseErrorMessage(error)
+        );
+    }
+}
+
+
+// =========================================
+// GET FEEDBACK FOR ONE REEL
+// =========================================
+
+async function getReelFeedback(
+    reelId
+) {
+
+    if (!reelId) {
+
+        throw new Error(
+            "A valid Reel ID is required."
+        );
+    }
+
+
+    const allFeedback =
+        await getFeedback();
+
+
+    const responses = {};
+
+
+    Object.entries(
+        allFeedback
+    ).forEach(
+        ([key, response]) => {
+
+            if (
+                response &&
+                response.reelId === reelId
+            ) {
+
+                responses[key] =
+                    response;
+            }
+
+        }
+    );
+
+
+    return responses;
+}
+
+
+// =========================================
+// EXPORT SERVICES
+// =========================================
+
+export {
+
+    database,
+
+    DATABASE_PATHS,
+
+    getReels,
+
+    getReel,
+
+    createReel,
+
+    updateReel,
+
+    deleteReel,
+
+    saveFeedback,
+
+    getFeedback,
+
+    getReelFeedback
+
+};
