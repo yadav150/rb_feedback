@@ -1,131 +1,107 @@
 const { onRequest } = require("firebase-functions/v2/https");
-const { setGlobalOptions } = require("firebase-functions/v2");
 
-setGlobalOptions({
-  region: "us-central1"
-});
-
-/*
- * Rudra Bhakti
- * Facebook Reel Metadata Fetcher
- *
- * This endpoint:
- * - Accepts a Facebook Reel URL
- * - Fetches the page server-side
- * - Reads Open Graph metadata
- * - Returns title + thumbnail
- *
- * No Firestore is used.
- * Firebase Realtime Database remains the application's database.
- */
-
-const ALLOWED_HOSTS = new Set([
+const ALLOWED_HOSTS = [
   "facebook.com",
   "www.facebook.com",
   "m.facebook.com",
-  "web.facebook.com",
   "fb.watch"
-]);
+];
 
-function isAllowedFacebookUrl(value) {
-  try {
-    const url = new URL(value);
+function isAllowedFacebookHost(hostname) {
+  const host = hostname.toLowerCase();
 
-    if (url.protocol !== "https:") {
-      return false;
-    }
-
-    const hostname = url.hostname.toLowerCase();
-
-    return (
-      ALLOWED_HOSTS.has(hostname) ||
-      hostname.endsWith(".facebook.com")
-    );
-  } catch {
-    return false;
-  }
+  return (
+    ALLOWED_HOSTS.includes(host) ||
+    host.endsWith(".facebook.com")
+  );
 }
 
-function decodeHtml(value) {
-  if (!value) return "";
-
+function decodeHtmlEntities(value = "") {
   return value
     .replace(/&amp;/gi, "&")
     .replace(/&quot;/gi, '"')
     .replace(/&#39;/gi, "'")
-    .replace(/&apos;/gi, "'")
+    .replace(/&#x27;/gi, "'")
     .replace(/&lt;/gi, "<")
     .replace(/&gt;/gi, ">")
-    .replace(/&#x2F;/gi, "/")
-    .replace(/&#47;/gi, "/");
+    .replace(/&#(\d+);/g, (_, code) =>
+      String.fromCharCode(Number(code))
+    )
+    .replace(/&#x([0-9a-f]+);/gi, (_, code) =>
+      String.fromCharCode(parseInt(code, 16))
+    );
 }
 
-function extractMeta(html, property) {
-  const escaped = property.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+function extractMetaContent(html, propertyName) {
+  const metaTags = html.match(/<meta\b[^>]*>/gi) || [];
 
-  const patterns = [
-    new RegExp(
-      `<meta[^>]+property=["']${escaped}["'][^>]+content=["']([^"']*)["'][^>]*>`,
-      "i"
-    ),
-    new RegExp(
-      `<meta[^>]+content=["']([^"']*)["'][^>]+property=["']${escaped}["'][^>]*>`,
-      "i"
-    )
-  ];
+  for (const tag of metaTags) {
+    const propertyMatch = tag.match(
+      /\b(?:property|name)\s*=\s*["']([^"']+)["']/i
+    );
 
-  for (const pattern of patterns) {
-    const match = html.match(pattern);
+    if (!propertyMatch) continue;
 
-    if (match && match[1]) {
-      return decodeHtml(match[1].trim());
+    if (
+      propertyMatch[1].toLowerCase() !== propertyName.toLowerCase()
+    ) {
+      continue;
+    }
+
+    const contentMatch = tag.match(
+      /\bcontent\s*=\s*["']([^"']*)["']/i
+    );
+
+    if (contentMatch) {
+      return decodeHtmlEntities(contentMatch[1].trim());
     }
   }
 
   return "";
 }
 
-function extractTitleTag(html) {
-  const match = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+function extractPageTitle(html) {
+  const match = html.match(
+    /<title\b[^>]*>([\s\S]*?)<\/title>/i
+  );
 
-  if (!match) {
-    return "";
-  }
+  if (!match) return "";
 
-  return decodeHtml(
+  return decodeHtmlEntities(
     match[1]
-      .replace(/\s+/g, " ")
+      .replace(/<[^>]+>/g, "")
       .trim()
   );
 }
 
-function cleanFacebookTitle(title) {
-  if (!title) return "";
-
-  return title
-    .replace(/\s+/g, " ")
-    .replace(/\s*\|\s*Facebook\s*$/i, "")
-    .replace(/\s*-\s*Facebook\s*$/i, "")
-    .trim();
-}
-
 exports.fetchFacebookMetadata = onRequest(
   {
-    cors: true,
+    region: "us-central1",
     timeoutSeconds: 30,
     memory: "256MiB"
   },
   async (req, res) => {
-    res.set("Cache-Control", "no-store");
+    // CORS
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set(
+      "Access-Control-Allow-Methods",
+      "POST, OPTIONS"
+    );
+    res.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type"
+    );
 
+    // Preflight
     if (req.method === "OPTIONS") {
       return res.status(204).send("");
     }
 
+    // Only POST
     if (req.method !== "POST") {
       return res.status(405).json({
         ok: false,
-        error: "POST method required."
+        error: "Only POST requests are allowed."
       });
     }
 
@@ -138,72 +114,126 @@ exports.fetchFacebookMetadata = onRequest(
       if (!facebookUrl) {
         return res.status(400).json({
           ok: false,
-          error: "Facebook Reel URL is required."
+          error: "Facebook URL is required."
         });
       }
 
-      if (!isAllowedFacebookUrl(facebookUrl)) {
+      let parsedUrl;
+
+      try {
+        parsedUrl = new URL(facebookUrl);
+      } catch {
         return res.status(400).json({
           ok: false,
-          error: "Only valid Facebook Reel URLs are allowed."
+          error: "Invalid URL."
         });
       }
 
-      const response = await fetch(facebookUrl, {
-        method: "GET",
-        redirect: "follow",
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0.0.0 Safari/537.36",
-          "Accept":
-            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-          "Accept-Language":
-            "en-US,en;q=0.9"
-        }
-      });
+      if (
+        !["http:", "https:"].includes(parsedUrl.protocol)
+      ) {
+        return res.status(400).json({
+          ok: false,
+          error: "Only HTTP and HTTPS URLs are allowed."
+        });
+      }
+
+      if (!isAllowedFacebookHost(parsedUrl.hostname)) {
+        return res.status(400).json({
+          ok: false,
+          error: "Please provide a valid Facebook Reel URL."
+        });
+      }
+
+      const controller = new AbortController();
+
+      const timeout = setTimeout(() => {
+        controller.abort();
+      }, 15000);
+
+      let response;
+
+      try {
+        response = await fetch(parsedUrl.toString(), {
+          method: "GET",
+          redirect: "follow",
+          signal: controller.signal,
+          headers: {
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140.0 Safari/537.36",
+            "Accept":
+              "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language":
+              "en-US,en;q=0.9"
+          }
+        });
+      } finally {
+        clearTimeout(timeout);
+      }
 
       if (!response.ok) {
-        return res.status(502).json({
+        return res.status(422).json({
           ok: false,
           error:
-            "Facebook did not return the Reel page. Try again or enter the title and thumbnail manually."
+            "Facebook did not return the Reel page metadata.",
+          status: response.status
+        });
+      }
+
+      const finalUrl = response.url || parsedUrl.toString();
+
+      let finalParsedUrl;
+
+      try {
+        finalParsedUrl = new URL(finalUrl);
+      } catch {
+        finalParsedUrl = parsedUrl;
+      }
+
+      if (!isAllowedFacebookHost(finalParsedUrl.hostname)) {
+        return res.status(422).json({
+          ok: false,
+          error:
+            "The Facebook URL redirected to an unsupported destination."
         });
       }
 
       const html = await response.text();
 
-      const ogTitle = extractMeta(html, "og:title");
-      const ogImage = extractMeta(html, "og:image");
+      const ogTitle =
+        extractMetaContent(html, "og:title");
 
-      const twitterTitle = extractMeta(html, "twitter:title");
-      const twitterImage = extractMeta(html, "twitter:image");
+      const ogImage =
+        extractMetaContent(html, "og:image");
 
-      const pageTitle = extractTitleTag(html);
+      const ogDescription =
+        extractMetaContent(html, "og:description");
 
-      const title = cleanFacebookTitle(
+      const pageTitle =
+        extractPageTitle(html);
+
+      const title =
         ogTitle ||
-        twitterTitle ||
-        pageTitle
-      );
+        pageTitle ||
+        "Rudra Bhakti Facebook Reel";
 
       const thumbnail =
-        ogImage ||
-        twitterImage ||
-        "";
+        ogImage || "";
 
-      if (!title && !thumbnail) {
+      if (!ogTitle && !pageTitle && !ogImage) {
         return res.status(422).json({
           ok: false,
           error:
-            "Facebook metadata could not be read. Facebook may be restricting automated access to this Reel."
+            "Facebook metadata could not be read from this Reel. Facebook may be blocking automated metadata access."
         });
       }
 
       return res.status(200).json({
         ok: true,
-        title: title || "Rudra Bhakti Facebook Reel",
+        title,
         thumbnail,
-        url: response.url || facebookUrl
+        description: ogDescription,
+        url: finalUrl
       });
 
     } catch (error) {
@@ -211,6 +241,14 @@ exports.fetchFacebookMetadata = onRequest(
         "Facebook metadata error:",
         error
       );
+
+      if (error.name === "AbortError") {
+        return res.status(504).json({
+          ok: false,
+          error:
+            "Facebook metadata request timed out."
+        });
+      }
 
       return res.status(500).json({
         ok: false,
