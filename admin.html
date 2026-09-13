@@ -2,27 +2,231 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Rudra Bhakti — Admin Dashboard</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="admin.css">
+    <meta
+        name="description"
+        content="Rudra Bhakti Admin Panel"
+    >
+
+    <title>Rudra Bhakti — Admin</title>
+
+    <link
+        rel="stylesheet"
+        href="admin.css"
+    >
 </head>
 
 <body>
 
-    <div class="admin-app">
+    <!-- =====================================
+         LOGIN SCREEN
+    ====================================== -->
 
-        <!-- SIDEBAR -->
+    <section
+        class="login-screen"
+        id="login-screen"
+    >
 
-        <aside class="admin-sidebar" id="admin-sidebar">
+        <div class="login-card">
+
+            <div class="login-brand">
+
+                <div class="login-brand-title">
+                    Rudra Bhakti
+                </div>
+
+                <div class="login-brand-subtitle">
+                    Feedback Intelligence
+                </div>
+
+            </div>
+
+
+            <div class="login-heading">
+
+                <span class="section-label">
+                    Administrator
+                </span>
+
+                <h1>
+                    Welcome back
+                </h1>
+
+                <p>
+                    Sign in to access the feedback dashboard,
+                    reel management, analytics and insights.
+                </p>
+
+            </div>
+
+
+            <div
+                class="login-message"
+                id="login-message"
+                hidden
+            ></div>
+
+
+            <form
+                class="login-form"
+                id="login-form"
+                novalidate
+            >
+
+                <div class="form-field">
+
+                    <label for="admin-email">
+                        Email address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="admin-email"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="username"
+                        spellcheck="false"
+                    >
+
+                    <div
+                        class="field-error"
+                        id="email-error"
+                    ></div>
+
+                </div>
+
+
+                <div class="form-field">
+
+                    <label for="admin-password">
+                        Password
+                    </label>
+
+                    <div class="password-wrapper">
+
+                        <input
+                            type="password"
+                            id="admin-password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="password-toggle"
+                            aria-label="Show password"
+                            aria-pressed="false"
+                        >
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"
+                                ></path>
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="2.5"
+                                ></circle>
+                            </svg>
+
+                        </button>
+
+                    </div>
+
+                    <div
+                        class="field-error"
+                        id="password-error"
+                    ></div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="login-button"
+                    id="login-button"
+                >
+
+                    <span id="login-button-text">
+                        Sign in
+                    </span>
+
+                    <span
+                        class="login-loader"
+                        id="login-loader"
+                        hidden
+                        aria-hidden="true"
+                    ></span>
+
+                </button>
+
+            </form>
+
+
+            <div class="login-footer">
+                Authorized administrator access only.
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================
+         ADMIN APPLICATION
+    ====================================== -->
+
+    <section
+        class="admin-app"
+        id="admin-app"
+        hidden
+    >
+
+
+        <!-- =================================
+             SIDEBAR
+        ================================== -->
+
+        <aside
+            class="admin-sidebar"
+            id="admin-sidebar"
+        >
 
             <div class="sidebar-header">
 
-                <a href="admin.html" class="admin-brand">
-                    <span class="brand-title">Rudra Bhakti</span>
-                    <span class="brand-subtitle">Admin Panel</span>
+                <a
+                    href="#"
+                    class="admin-brand"
+                    aria-label="Rudra Bhakti Admin"
+                >
+
+                    <span class="brand-title">
+                        Rudra Bhakti
+                    </span>
+
+                    <span class="brand-subtitle">
+                        Admin Panel
+                    </span>
+
                 </a>
+
 
                 <button
                     type="button"
@@ -30,151 +234,242 @@
                     id="sidebar-close"
                     aria-label="Close navigation"
                 >
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path
-                            d="M6 6l12 12M18 6 6 18"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                    >
+                        <path d="M6 6l12 12"></path>
+                        <path d="M18 6L6 18"></path>
                     </svg>
+
                 </button>
 
             </div>
 
 
-            <nav class="admin-navigation" aria-label="Admin navigation">
+            <nav
+                class="admin-navigation"
+                aria-label="Admin navigation"
+            >
+
+                <!-- Overview -->
 
                 <button
                     type="button"
                     class="nav-item active"
                     data-page="overview"
                 >
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
                         <rect
-                            x="4"
-                            y="4"
-                            width="6"
-                            height="6"
+                            x="3"
+                            y="3"
+                            width="7"
+                            height="7"
                             rx="1"
-                            stroke="currentColor"
-                            stroke-width="1.7"
-                        />
-                        <rect
-                            x="14"
-                            y="4"
-                            width="6"
-                            height="6"
-                            rx="1"
-                            stroke="currentColor"
-                            stroke-width="1.7"
-                        />
-                        <rect
-                            x="4"
-                            y="14"
-                            width="6"
-                            height="6"
-                            rx="1"
-                            stroke="currentColor"
-                            stroke-width="1.7"
-                        />
+                        ></rect>
+
                         <rect
                             x="14"
-                            y="14"
-                            width="6"
-                            height="6"
+                            y="3"
+                            width="7"
+                            height="7"
                             rx="1"
-                            stroke="currentColor"
-                            stroke-width="1.7"
-                        />
+                        ></rect>
+
+                        <rect
+                            x="3"
+                            y="14"
+                            width="7"
+                            height="7"
+                            rx="1"
+                        ></rect>
+
+                        <rect
+                            x="14"
+                            y="14"
+                            width="7"
+                            height="7"
+                            rx="1"
+                        ></rect>
                     </svg>
 
-                    <span>Overview</span>
+                    <span>
+                        Overview
+                    </span>
+
                 </button>
 
+
+                <!-- Reels -->
 
                 <button
                     type="button"
                     class="nav-item"
                     data-page="reels"
                 >
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
                         <rect
-                            x="4"
+                            x="3"
                             y="4"
-                            width="16"
+                            width="18"
                             height="16"
-                            rx="3"
-                            stroke="currentColor"
-                            stroke-width="1.7"
-                        />
+                            rx="2"
+                        ></rect>
+
                         <path
-                            d="m10 9 5 3-5 3V9Z"
-                            fill="currentColor"
-                        />
+                            d="M8 4l3 4"
+                        ></path>
+
+                        <path
+                            d="M13 4l3 4"
+                        ></path>
+
+                        <path
+                            d="M8 12h.01"
+                        ></path>
+
+                        <path
+                            d="M12 12h.01"
+                        ></path>
+
+                        <path
+                            d="M16 12h.01"
+                        ></path>
                     </svg>
 
-                    <span>Reels</span>
+                    <span>
+                        Reels
+                    </span>
+
                 </button>
 
+
+                <!-- Analytics -->
 
                 <button
                     type="button"
                     class="nav-item"
                     data-page="analytics"
                 >
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
                         <path
-                            d="M5 19V9M12 19V5M19 19v-7"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
+                            d="M4 19V9"
+                        ></path>
+
+                        <path
+                            d="M10 19V5"
+                        ></path>
+
+                        <path
+                            d="M16 19v-7"
+                        ></path>
+
+                        <path
+                            d="M22 19H2"
+                        ></path>
                     </svg>
 
-                    <span>Analytics</span>
+                    <span>
+                        Analytics
+                    </span>
+
                 </button>
 
+
+                <!-- Insights -->
 
                 <button
                     type="button"
                     class="nav-item"
                     data-page="insights"
                 >
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
                         <path
-                            d="M9 18h6M10 21h4"
-                            stroke="currentColor"
-                            stroke-width="1.7"
-                            stroke-linecap="round"
-                        />
+                            d="M9 18h6"
+                        ></path>
+
                         <path
-                            d="M8 15.5c-1.25-.9-2-2.35-2-4a6 6 0 1 1 12 0c0 1.65-.75 3.1-2 4-.8.58-1.2 1.05-1.2 1.5h-5.6c0-.45-.4-.92-1.2-1.5Z"
-                            stroke="currentColor"
-                            stroke-width="1.7"
-                            stroke-linejoin="round"
-                        />
+                            d="M10 22h4"
+                        ></path>
+
+                        <path
+                            d="M8.5 14.5a7 7 0 1 1 7 0c-.9.6-1.5 1.5-1.5 2.5h-4c0-1-.6-1.9-1.5-2.5Z"
+                        ></path>
                     </svg>
 
-                    <span>Insights</span>
+                    <span>
+                        Insights
+                    </span>
+
                 </button>
 
+
+                <!-- Recommendations -->
 
                 <button
                     type="button"
                     class="nav-item"
                     data-page="recommendations"
                 >
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
                         <path
-                            d="M12 4v16M4 12h16"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
+                            d="M12 3l2.7 5.5 6.3.9-4.5 4.4 1.1 6.2L12 17l-5.6 3 1.1-6.2L3 9.4l6.3-.9L12 3Z"
+                        ></path>
                     </svg>
 
-                    <span>Recommendations</span>
+                    <span>
+                        Recommendations
+                    </span>
+
                 </button>
 
             </nav>
@@ -182,16 +477,19 @@
 
             <div class="sidebar-footer">
 
-                <span class="connection-indicator"></span>
+                <span
+                    class="connection-indicator"
+                    aria-hidden="true"
+                ></span>
 
-                <span>System ready</span>
+                <span>
+                    Admin system
+                </span>
 
             </div>
 
         </aside>
 
-
-        <!-- OVERLAY -->
 
         <div
             class="sidebar-overlay"
@@ -199,9 +497,12 @@
         ></div>
 
 
-        <!-- MAIN -->
+        <!-- =================================
+             MAIN CONTENT
+        ================================== -->
 
         <main class="admin-main">
+
 
             <!-- TOPBAR -->
 
@@ -213,21 +514,26 @@
                     id="menu-button"
                     aria-label="Open navigation"
                 >
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path
-                            d="M4 7h16M4 12h16M4 17h16"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                    >
+                        <path d="M4 7h16"></path>
+                        <path d="M4 12h16"></path>
+                        <path d="M4 17h16"></path>
                     </svg>
+
                 </button>
 
 
                 <div class="topbar-heading">
 
                     <span class="topbar-label">
-                        Dashboard
+                        Rudra Bhakti
                     </span>
 
                     <h1 id="page-title">
@@ -240,15 +546,51 @@
                 <div class="topbar-actions">
 
                     <span class="admin-status">
-                        Admin
+                        Administrator
                     </span>
+
+
+                    <div
+                        class="admin-avatar"
+                        id="admin-avatar"
+                        aria-label="Administrator"
+                    >
+                        A
+                    </div>
+
 
                     <button
                         type="button"
-                        class="admin-avatar"
-                        aria-label="Admin account"
+                        class="admin-logout"
+                        id="admin-logout"
                     >
-                        A
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M10 17l5-5-5-5"
+                            ></path>
+
+                            <path
+                                d="M15 12H3"
+                            ></path>
+
+                            <path
+                                d="M14 4h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-5"
+                            ></path>
+                        </svg>
+
+                        <span>
+                            Logout
+                        </span>
+
                     </button>
 
                 </div>
@@ -256,14 +598,14 @@
             </header>
 
 
-            <!-- PAGE CONTENT -->
+            <!-- CONTENT -->
 
             <div class="admin-content">
 
 
                 <!-- =================================
                      OVERVIEW
-                ================================= -->
+                ================================== -->
 
                 <section
                     class="admin-page active"
@@ -273,18 +615,20 @@
                     <div class="page-introduction">
 
                         <div>
+
                             <span class="section-label">
-                                Feedback intelligence
+                                Dashboard
                             </span>
 
                             <h2>
-                                Audience overview
+                                Feedback intelligence
                             </h2>
 
                             <p>
-                                Understand how your audience is responding
-                                to Rudra Bhakti Reels.
+                                A central view of audience feedback,
+                                reel performance and future insights.
                             </p>
+
                         </div>
 
 
@@ -293,20 +637,22 @@
                             class="primary-admin-button"
                             data-open-page="reels"
                         >
-                            <span>Add Reel</span>
 
                             <svg
                                 viewBox="0 0 24 24"
                                 fill="none"
-                                aria-hidden="true"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
                             >
-                                <path
-                                    d="M12 5v14M5 12h14"
-                                    stroke="currentColor"
-                                    stroke-width="1.8"
-                                    stroke-linecap="round"
-                                />
+                                <path d="M12 5v14"></path>
+                                <path d="M5 12h14"></path>
                             </svg>
+
+                            <span>
+                                Add Reel
+                            </span>
+
                         </button>
 
                     </div>
@@ -315,6 +661,7 @@
                     <div class="stats-grid">
 
                         <article class="stat-card">
+
                             <span class="stat-label">
                                 Total Reels
                             </span>
@@ -324,12 +671,14 @@
                             </strong>
 
                             <span class="stat-description">
-                                Published feedback forms
+                                Published feedback reels
                             </span>
+
                         </article>
 
 
                         <article class="stat-card">
+
                             <span class="stat-label">
                                 Responses
                             </span>
@@ -339,12 +688,14 @@
                             </strong>
 
                             <span class="stat-description">
-                                Total audience responses
+                                Audience feedback received
                             </span>
+
                         </article>
 
 
                         <article class="stat-card">
+
                             <span class="stat-label">
                                 Average Rating
                             </span>
@@ -354,23 +705,26 @@
                             </strong>
 
                             <span class="stat-description">
-                                Across all feedback
+                                Based on submitted ratings
                             </span>
+
                         </article>
 
 
                         <article class="stat-card">
+
                             <span class="stat-label">
-                                Positive Response
+                                Engagement
                             </span>
 
-                            <strong id="positive-response">
+                            <strong id="engagement-score">
                                 —
                             </strong>
 
                             <span class="stat-description">
-                                Audience sentiment
+                                Feedback engagement signal
                             </span>
+
                         </article>
 
                     </div>
@@ -382,15 +736,9 @@
 
                             <div class="card-heading">
 
-                                <div>
-                                    <span class="section-label">
-                                        Recent activity
-                                    </span>
-
-                                    <h3>
-                                        Latest feedback
-                                    </h3>
-                                </div>
+                                <h3>
+                                    Recent feedback
+                                </h3>
 
                                 <button
                                     type="button"
@@ -405,28 +753,24 @@
 
                             <div
                                 class="empty-state"
-                                id="recent-feedback-empty"
+                                id="recent-feedback"
                             >
+
                                 <div class="empty-icon">
+
                                     <svg
                                         viewBox="0 0 24 24"
                                         fill="none"
-                                        aria-hidden="true"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
                                     >
                                         <path
-                                            d="M6 4h12v16H6z"
-                                            stroke="currentColor"
-                                            stroke-width="1.7"
-                                            stroke-linejoin="round"
-                                        />
-
-                                        <path
-                                            d="M9 9h6M9 13h6M9 17h3"
-                                            stroke="currentColor"
-                                            stroke-width="1.7"
-                                            stroke-linecap="round"
-                                        />
+                                            d="M4 5h16v11H8l-4 4V5Z"
+                                        ></path>
                                     </svg>
+
                                 </div>
 
                                 <strong>
@@ -434,9 +778,10 @@
                                 </strong>
 
                                 <p>
-                                    Responses will appear here once
-                                    your audience starts submitting feedback.
+                                    Submitted audience responses
+                                    will appear here.
                                 </p>
+
                             </div>
 
                         </article>
@@ -446,32 +791,33 @@
 
                             <div class="card-heading">
 
-                                <div>
-                                    <span class="section-label">
-                                        Intelligence
-                                    </span>
+                                <h3>
+                                    Intelligence
+                                </h3>
 
-                                    <h3>
-                                        Current signal
-                                    </h3>
-                                </div>
+                                <button
+                                    type="button"
+                                    class="text-button"
+                                    data-open-page="insights"
+                                >
+                                    Explore
+                                </button>
 
                             </div>
 
 
-                            <div
-                                class="intelligence-placeholder"
-                                id="current-signal"
-                            >
+                            <div class="intelligence-placeholder">
 
                                 <span class="signal-status">
-                                    Awaiting data
+                                    Waiting for data
                                 </span>
 
                                 <p>
-                                    Intelligent audience insights will
-                                    appear after sufficient feedback data
-                                    has been collected.
+                                    Intelligent audience patterns,
+                                    behavioral signals and improvement
+                                    opportunities will be generated
+                                    after sufficient feedback data is
+                                    collected.
                                 </p>
 
                             </div>
@@ -483,9 +829,10 @@
                 </section>
 
 
+
                 <!-- =================================
                      REELS
-                ================================= -->
+                ================================== -->
 
                 <section
                     class="admin-page"
@@ -495,8 +842,9 @@
                     <div class="page-introduction">
 
                         <div>
+
                             <span class="section-label">
-                                Content management
+                                Content
                             </span>
 
                             <h2>
@@ -504,9 +852,10 @@
                             </h2>
 
                             <p>
-                                Create and manage unique feedback links
-                                for each Reel.
+                                Create and manage feedback pages
+                                for individual Rudra Bhakti reels.
                             </p>
+
                         </div>
 
 
@@ -515,20 +864,22 @@
                             class="primary-admin-button"
                             id="add-reel-button"
                         >
-                            <span>Add Reel</span>
 
                             <svg
                                 viewBox="0 0 24 24"
                                 fill="none"
-                                aria-hidden="true"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
                             >
-                                <path
-                                    d="M12 5v14M5 12h14"
-                                    stroke="currentColor"
-                                    stroke-width="1.8"
-                                    stroke-linecap="round"
-                                />
+                                <path d="M12 5v14"></path>
+                                <path d="M5 12h14"></path>
                             </svg>
+
+                            <span>
+                                Add Reel
+                            </span>
+
                         </button>
 
                     </div>
@@ -539,39 +890,49 @@
                         id="reel-list"
                     >
 
-                        <div class="empty-state large">
+                        <div class="dashboard-card">
 
-                            <div class="empty-icon">
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    aria-hidden="true"
-                                >
-                                    <rect
-                                        x="4"
-                                        y="4"
-                                        width="16"
-                                        height="16"
-                                        rx="3"
+                            <div class="empty-state">
+
+                                <div class="empty-icon">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
                                         stroke="currentColor"
                                         stroke-width="1.7"
-                                    />
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <rect
+                                            x="3"
+                                            y="4"
+                                            width="18"
+                                            height="16"
+                                            rx="2"
+                                        ></rect>
 
-                                    <path
-                                        d="m10 9 5 3-5 3V9Z"
-                                        fill="currentColor"
-                                    />
-                                </svg>
+                                        <path
+                                            d="M8 4l3 4"
+                                        ></path>
+
+                                        <path
+                                            d="M13 4l3 4"
+                                        ></path>
+                                    </svg>
+
+                                </div>
+
+                                <strong>
+                                    No reels added
+                                </strong>
+
+                                <p>
+                                    Add your first reel to generate
+                                    its unique feedback page.
+                                </p>
+
                             </div>
-
-                            <strong>
-                                No Reels added
-                            </strong>
-
-                            <p>
-                                Add your first Reel to generate
-                                a unique feedback URL.
-                            </p>
 
                         </div>
 
@@ -580,9 +941,10 @@
                 </section>
 
 
+
                 <!-- =================================
                      ANALYTICS
-                ================================= -->
+                ================================== -->
 
                 <section
                     class="admin-page"
@@ -592,8 +954,9 @@
                     <div class="page-introduction">
 
                         <div>
+
                             <span class="section-label">
-                                Audience data
+                                Data
                             </span>
 
                             <h2>
@@ -601,9 +964,11 @@
                             </h2>
 
                             <p>
-                                Explore response patterns across
-                                your Reel feedback.
+                                Explore reel-wise feedback,
+                                question-level responses and
+                                audience behavior.
                             </p>
+
                         </div>
 
                     </div>
@@ -612,28 +977,31 @@
                     <div class="analytics-placeholder">
 
                         <div class="placeholder-icon">
+
                             <svg
                                 viewBox="0 0 24 24"
                                 fill="none"
-                                aria-hidden="true"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                                stroke-linecap="round"
                             >
-                                <path
-                                    d="M5 19V9M12 19V5M19 19v-7"
-                                    stroke="currentColor"
-                                    stroke-width="1.8"
-                                    stroke-linecap="round"
-                                />
+                                <path d="M4 19V9"></path>
+                                <path d="M10 19V5"></path>
+                                <path d="M16 19v-7"></path>
+                                <path d="M22 19H2"></path>
                             </svg>
+
                         </div>
 
                         <h3>
-                            Analytics will appear here
+                            Analytics engine
                         </h3>
 
                         <p>
-                            Response volume, ratings, preference patterns,
-                            engagement signals and time-based trends
-                            will be calculated from Firebase data.
+                            Detailed reel-wise analytics,
+                            response distributions, ratings,
+                            engagement and timing analysis will
+                            be connected to the Realtime Database.
                         </p>
 
                     </div>
@@ -641,9 +1009,10 @@
                 </section>
 
 
+
                 <!-- =================================
                      INSIGHTS
-                ================================= -->
+                ================================== -->
 
                 <section
                     class="admin-page"
@@ -653,8 +1022,9 @@
                     <div class="page-introduction">
 
                         <div>
+
                             <span class="section-label">
-                                Audience intelligence
+                                Intelligence
                             </span>
 
                             <h2>
@@ -662,9 +1032,11 @@
                             </h2>
 
                             <p>
-                                Identify meaningful patterns behind
-                                audience responses.
+                                Transform audience responses into
+                                meaningful behavioral and content
+                                improvement signals.
                             </p>
+
                         </div>
 
                     </div>
@@ -675,17 +1047,16 @@
                         <article class="insight-card">
 
                             <span class="insight-category">
-                                Psychological signal
+                                Audience
                             </span>
 
                             <h3>
-                                Not enough data yet
+                                Preference patterns
                             </h3>
 
                             <p>
-                                Audience preference and emotional response
-                                signals will be generated after feedback
-                                data is collected.
+                                Identify what types of reels
+                                viewers consistently prefer.
                             </p>
 
                         </article>
@@ -694,16 +1065,16 @@
                         <article class="insight-card">
 
                             <span class="insight-category">
-                                Time pattern
+                                Behavior
                             </span>
 
                             <h3>
-                                Not enough data yet
+                                Response behavior
                             </h3>
 
                             <p>
-                                Response timing and time-based behavioural
-                                patterns will be analysed automatically.
+                                Analyze response timing,
+                                completion and interaction signals.
                             </p>
 
                         </article>
@@ -712,16 +1083,16 @@
                         <article class="insight-card">
 
                             <span class="insight-category">
-                                Improvement signal
+                                Improvement
                             </span>
 
                             <h3>
-                                Not enough data yet
+                                Content opportunities
                             </h3>
 
                             <p>
-                                Feedback trends will help identify
-                                opportunities for content improvement.
+                                Detect recurring feedback patterns
+                                that can guide future reel creation.
                             </p>
 
                         </article>
@@ -731,9 +1102,10 @@
                 </section>
 
 
+
                 <!-- =================================
                      RECOMMENDATIONS
-                ================================= -->
+                ================================== -->
 
                 <section
                     class="admin-page"
@@ -743,8 +1115,9 @@
                     <div class="page-introduction">
 
                         <div>
+
                             <span class="section-label">
-                                Content strategy
+                                Decision support
                             </span>
 
                             <h2>
@@ -752,9 +1125,11 @@
                             </h2>
 
                             <p>
-                                Data-driven recommendations for future
-                                Rudra Bhakti Reels.
+                                Convert accumulated audience
+                                intelligence into practical content
+                                recommendations.
                             </p>
+
                         </div>
 
                     </div>
@@ -763,49 +1138,54 @@
                     <div class="recommendation-placeholder">
 
                         <div class="placeholder-icon">
+
                             <svg
                                 viewBox="0 0 24 24"
                                 fill="none"
-                                aria-hidden="true"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
                             >
                                 <path
-                                    d="M9 18h6M10 21h4"
-                                    stroke="currentColor"
-                                    stroke-width="1.7"
-                                    stroke-linecap="round"
-                                />
+                                    d="M12 3l2.7 5.5 6.3.9-4.5 4.4 1.1 6.2L12 17l-5.6 3 1.1-6.2L3 9.4l6.3-.9L12 3Z"
+                                ></path>
 
-                                <path
-                                    d="M8 15.5c-1.25-.9-2-2.35-2-4a6 6 0 1 1 12 0c0 1.65-.75 3.1-2 4-.8.58-1.2 1.05-1.2 1.5h-5.6c0-.45-.4-.92-1.2-1.5Z"
-                                    stroke="currentColor"
-                                    stroke-width="1.7"
-                                    stroke-linejoin="round"
-                                />
                             </svg>
+
                         </div>
 
                         <h3>
-                            Recommendations will be generated
+                            Recommendation engine
                         </h3>
 
                         <p>
-                            The system will analyse Reel-level preferences,
-                            ratings, sentiment signals and audience patterns
-                            to recommend future content directions.
+                            Recommendations will be generated from
+                            question IDs, option IDs, reel-level
+                            performance and accumulated audience
+                            feedback patterns.
                         </p>
 
                     </div>
 
                 </section>
 
+
             </div>
 
         </main>
 
-    </div>
+    </section>
 
 
-    <script type="module" src="admin.js"></script>
+    <!-- =====================================
+         JAVASCRIPT
+    ====================================== -->
+
+    <script
+        type="module"
+        src="admin.js"
+    ></script>
 
 </body>
 </html>
