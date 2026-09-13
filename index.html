@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rudra Bhakti — Reel Feedback</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="feedback-app">
+
+        <header class="feedback-header">
+
+            <a href="#" class="brand">
+                <span class="brand-name">Rudra Bhakti</span>
+            </a>
+
+            <div class="progress-indicator">
+                <span class="progress-step active"></span>
+                <span class="progress-step"></span>
+                <span class="progress-step"></span>
+            </div>
+
+        </header>
+
+
+        <section class="feedback-container">
+
+            <!-- STEP 1 -->
+
+            <section class="feedback-step" id="user-details-step">
+
+                <div class="step-heading">
+
+                    <span class="step-label">Welcome</span>
+
+                    <h1>We'd love to hear from you</h1>
+
+                    <p>
+                        Before you share your feedback,
+                        tell us a little about yourself.
+                    </p>
+
+                </div>
+
+
+                <form class="user-details-form" id="user-details-form">
+
+                    <div class="form-field">
+
+                        <label for="user-name">Name</label>
+
+                        <input
+                            type="text"
+                            id="user-name"
+                            placeholder="Enter your name"
+                            autocomplete="name"
+                        >
+
+                    </div>
+
+
+                    <div class="form-field">
+
+                        <label for="user-email">Email</label>
+
+                        <input
+                            type="email"
+                            id="user-email"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                        >
+
+                    </div>
+
+
+                    <button type="submit" class="primary-button">
+
+                        <span>Continue</span>
+
+                        <svg
+                            class="button-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M5 12h13M13 6l6 6-6 6"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                        </svg>
+
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- STEP 2 -->
+
+            <section
+                class="feedback-step"
+                id="feedback-step"
+                hidden
+            >
+
+                <!-- Dynamic Reel Preview -->
+
+                <div class="reel-section">
+
+                    <div class="reel-preview">
+
+                        <img
+                            class="reel-thumbnail"
+                            id="reel-thumbnail"
+                            src=""
+                            alt="Reel preview"
+                        >
+
+                        <div class="reel-preview-overlay">
+
+                            <svg
+                                class="play-icon"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    d="M9 6.5v11l9-5.5-9-5.5Z"
+                                    fill="currentColor"
+                                />
+                            </svg>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="reel-information">
+
+                        <span class="content-label">
+                            Reel Feedback
+                        </span>
+
+                        <h2 id="reel-title">
+                            Reel Title
+                        </h2>
+
+                        <p id="reel-description">
+                            Share your thoughts about this Reel.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form class="feedback-form" id="feedback-form">
+
+                    <!-- QUESTION 1 -->
+
+                    <fieldset class="feedback-question">
+
+                        <div class="question-header">
+
+                            <div class="question-heading">
+
+                                <span class="question-number">
+                                    01
+                                </span>
+
+                                <legend>
+                                    How do you like this Reel?
+                                </legend>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="tts-button"
+                                data-hindi="आपको ये रील कैसी लगी?"
+                                aria-label="Listen to Hindi question"
+                            >
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M4 9v6h4l5 4V5L8 9H4Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+
+                                    <path
+                                        d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                    />
+                                </svg>
+
+                            </button>
+
+                        </div>
+
+
+                        <div class="option-list">
+
+                            <label class="feedback-option">
+                                <input
+                                    type="radio"
+                                    name="reel_like"
+                                    value="LIKE_01"
+                                >
+                                <span class="option-content">
+                                    <span class="option-text">
+                                        I really liked it
+                                    </span>
+                                </span>
+                            </label>
+
+
+                            <label class="feedback-option">
+                                <input
+                                    type="radio"
+                                    name="reel_like"
+                                    value="LIKE_02"
+                                >
+                                <span class="option-content">
+                                    <span class="option-text">
+                                        I liked it
+                                    </span>
+                                </span>
+                            </label>
+
+
+                            <label class="feedback-option">
+                                <input
+                                    type="radio"
+                                    name="reel_like"
+                                    value="LIKE_03"
+                                >
+                                <span class="option-content">
+                                    <span class="option-text">
+                                        It was okay
+                                    </span>
+                                </span>
+                            </label>
+
+
+                            <label class="feedback-option">
+                                <input
+                                    type="radio"
+                                    name="reel_like"
+                                    value="LIKE_04"
+                                >
+                                <span class="option-content">
+                                    <span class="option-text">
+                                        I didn't like it
+                                    </span>
+                                </span>
+                            </label>
+
+                        </div>
+
+                    </fieldset>
+
+
+                    <!-- QUESTION 2 -->
+
+                    <fieldset class="feedback-question">
+
+                        <div class="question-header">
+
+                            <div class="question-heading">
+
+                                <span class="question-number">
+                                    02
+                                </span>
+
+                                <legend>
+                                    What did you understand or feel after watching this Reel?
+                                </legend>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="tts-button"
+                                data-hindi="इस रील को देखने के बाद आपको क्या समझ आया या कैसा महसूस हुआ?"
+                                aria-label="Listen to Hindi question"
+                            >
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M4 9v6h4l5 4V5L8 9H4Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+
+                                    <path
+                                        d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                    />
+                                </svg>
+
+                            </button>
+
+                        </div>
+
+
+                        <div class="option-list">
+
+                            <label class="feedback-option">
+                                <input
+                                    type="radio"
+                                    name="reel_feeling"
+                                    value="FEELING_01"
+                                >
+                                <span class="option-content">
+                                    <span class="option-text">
+                                        It felt peaceful and devotional
+                                    </span>
+                                </span>
+                            </label>
+
+
+                            <label class="feedback-option">
+                                <input
+                                    type="radio"
+                                    name="reel_feeling"
+                                    value="FEELING_02"
+                                >
+                                <span class="option-content">
+                                    <span class="option-text">
+                                        It felt emotionally meaningful
+                                    </span>
+                                </span>
+                            </label>
+
+
+                            <label class="feedback-option">
+                                <input
+                                    type="radio"
+                                    name="reel_feeling"
+                                    value="FEELING_03"
+                                >
+                                <span class="option-content">
+                                    <span class="option-text">
+                                        I learned or understood something
+                                    </span>
+                                </span>
+                            </label>
+
+
+                            <label class="feedback-option">
+                                <input
+                                    type="radio"
+                                    name="reel_feeling"
+                                    value="FEELING_04"
+                                >
+                                <span class="option-content">
+                                    <span class="option-text">
+                                        It did not create much impact
+                                    </span>
+                                </span>
+                            </label>
+
+                        </div>
+
+                    </fieldset>
+
+
+                    <!-- QUESTION 3 -->
+
+                    <fieldset class="feedback-question">
+
+                        <div class="question-header">
+
+                            <div class="question-heading">
+
+                                <span class="question-number">
+                                    03
+                                </span>
+
+                                <legend>
+                                    Would you like to see more Reels like this?
+                                </legend>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="tts-button"
+                                data-hindi="क्या आप इसी तरह की और रील्स देखना चाहेंगे?"
+                                aria-label="Listen to Hindi question"
+                            >
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M4 9v6h4l5 4V5L8 9H4Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+
+                                    <path
+                                        d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                    />
+                                </svg>
+
+                            </button>
+
+                        </div>
+
+
+                        <div class="option-list">
+
+                            <label class="feedback-option">
+                                <input
+                                    type="radio"
+                                    name="more_content"
+                                    value="MORE_01"
+                                >
+                                <span class="option-content">
+                                    <span class="option-text">
+                                        Definitely
+                                    </span>
+                                </span>
+                            </label>
+
+
+                            <label class="feedback-option">
+                                <input
+                                    type="radio"
+                                    name="more_content"
+                                    value="MORE_02"
+                                >
+                                <span class="option-content">
+                                    <span class="option-text">
+                                        Yes, sometimes
+                                    </span>
+                                </span>
+                            </label>
+
+
+                            <label class="feedback-option">
+                                <input
+                                    type="radio"
+                                    name="more_content"
+                                    value="MORE_03"
+                                >
+                                <span class="option-content">
+                                    <span class="option-text">
+                                        Not sure
+                                    </span>
+                                </span>
+                            </label>
+
+
+                            <label class="feedback-option">
+                                <input
+                                    type="radio"
+                                    name="more_content"
+                                    value="MORE_04"
+                                >
+                                <span class="option-content">
+                                    <span class="option-text">
+                                        Probably not
+                                    </span>
+                                </span>
+                            </label>
+
+                        </div>
+
+                    </fieldset>
+
+
+                    <!-- QUESTION 4 -->
+
+                    <fieldset class="feedback-question">
+
+                        <div class="question-header">
+
+                            <div class="question-heading">
+
+                                <span class="question-number">
+                                    04
+                                </span>
+
+                                <legend>
+                                    How would you rate this Reel?
+                                </legend>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="tts-button"
+                                data-hindi="आप इस रील को कितनी रेटिंग देना चाहेंगे?"
+                                aria-label="Listen to Hindi question"
+                            >
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M4 9v6h4l5 4V5L8 9H4Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+
+                                    <path
+                                        d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                    />
+                                </svg>
+
+                            </button>
+
+                        </div>
+
+
+                        <div class="rating-options">
+
+                            <label class="rating-option">
+                                <input
+                                    type="radio"
+                                    name="rating"
+                                    value="RATING_01"
+                                >
+                                <span>1</span>
+                            </label>
+
+                            <label class="rating-option">
+                                <input
+                                    type="radio"
+                                    name="rating"
+                                    value="RATING_02"
+                                >
+                                <span>2</span>
+                            </label>
+
+                            <label class="rating-option">
+                                <input
+                                    type="radio"
+                                    name="rating"
+                                    value="RATING_03"
+                                >
+                                <span>3</span>
+                            </label>
+
+                            <label class="rating-option">
+                                <input
+                                    type="radio"
+                                    name="rating"
+                                    value="RATING_04"
+                                >
+                                <span>4</span>
+                            </label>
+
+                            <label class="rating-option">
+                                <input
+                                    type="radio"
+                                    name="rating"
+                                    value="RATING_05"
+                                >
+                                <span>5</span>
+                            </label>
+
+                        </div>
+
+                    </fieldset>
+
+
+                    <!-- QUESTION 5 -->
+
+                    <fieldset class="feedback-question">
+
+                        <div class="question-header">
+
+                            <div class="question-heading">
+
+                                <span class="question-number">
+                                    05
+                                </span>
+
+                                <legend>
+                                    Would you like to tell us something in your own words?
+                                </legend>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="tts-button"
+                                data-hindi="क्या आप अपने शब्दों में हमें कुछ बताना चाहेंगे?"
+                                aria-label="Listen to Hindi question"
+                            >
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M4 9v6h4l5 4V5L8 9H4Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+
+                                    <path
+                                        d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                    />
+                                </svg>
+
+                            </button>
+
+                        </div>
+
+
+                        <div class="textarea-wrapper">
+
+                            <textarea
+                                id="written-feedback"
+                                maxlength="500"
+                                placeholder="Share your thoughts..."
+                            ></textarea>
+
+                            <span
+                                class="character-count"
+                                id="character-count"
+                            >
+                                0 / 500
+                            </span>
+
+                        </div>
+
+                    </fieldset>
+
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                    >
+
+                        <span>Submit Feedback</span>
+
+                        <svg
+                            class="button-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M5 12h13M13 6l6 6-6 6"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                        </svg>
+
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- STEP 3 -->
+
+            <section
+                class="feedback-step thank-you-step"
+                id="thank-you-step"
+                hidden
+            >
+
+                <div class="success-content">
+
+                    <div class="success-icon">
+
+                        <svg
+                            viewBox="0 0 48 48"
+                            fill="none"
+                            aria-hidden="true"
+                        >
+                            <circle
+                                cx="24"
+                                cy="24"
+                                r="20"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                            />
+
+                            <path
+                                d="m15.5 24 5.5 5.5L33 17.5"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                        </svg>
+
+                    </div>
+
+
+                    <span class="success-label">
+                        Response received
+                    </span>
+
+
+                    <h2>
+                        Thank you for your response
+                    </h2>
+
+
+                    <p>
+                        Your feedback helps Rudra Bhakti
+                        understand what resonates with its audience.
+                    </p>
+
+
+                    <button
+                        type="button"
+                        class="facebook-share-button"
+                        id="facebook-share-button"
+                    >
+
+                        <span>Share on Facebook</span>
+
+                        <svg
+                            class="button-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M14 5h5v5"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+
+                            <path
+                                d="M19 5 11 13"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                            />
+
+                            <path
+                                d="M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                            />
+                        </svg>
+
+                    </button>
+
+                </div>
+
+            </section>
+
+        </section>
+
+
+        <footer class="feedback-footer">
+            Rudra Bhakti
+        </footer>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
