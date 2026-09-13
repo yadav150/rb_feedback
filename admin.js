@@ -1,6 +1,4 @@
 import {
-    getApps,
-    getApp,
     initializeApp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
@@ -35,11 +33,10 @@ const firebaseConfig = {
     measurementId: "G-RYKGBGSLVB"
 };
 
-const app = getApps().length
-    ? getApp()
-    : initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
+
 const db = getDatabase(app);
 
 
