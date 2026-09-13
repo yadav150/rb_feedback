@@ -1,155 +1,118 @@
-// =========================================
-// RUDRA BHAKTI
-// PUBLIC FEEDBACK — SCRIPT.JS
-// =========================================
-
 import {
     getReel,
     saveFeedback
 } from "./firebase-service.js";
 
 
-// =========================================
-// CONFIGURATION
-// =========================================
+/* =========================================================
+   FIXED QUESTIONS
+========================================================= */
 
-const CONFIG = {
-    fallbackName: "Anonymous",
-    fallbackEmail: "anonymous@gmail.com",
+const QUESTIONS = [
+    {
+        id: "Q_FEELING",
+        text: "How did this Reel make you feel?",
+        type: "single",
+        options: [
+            {
+                id: "FEELING_PEACEFUL",
+                label: "Peaceful"
+            },
+            {
+                id: "FEELING_DEVOTIONAL",
+                label: "Devotional"
+            },
+            {
+                id: "FEELING_EMOTIONAL",
+                label: "Emotional"
+            },
+            {
+                id: "FEELING_INSPIRED",
+                label: "Inspired"
+            }
+        ]
+    },
 
-    questions: [
-        {
-            id: "Q_FEELING",
-            text: "How do you like this reel?",
-            hindi: "आपको ये रील कैसी लगी?",
-            helper: "Choose the option that best describes your reaction.",
+    {
+        id: "Q_MORE_CONTENT",
+        text: "Would you like to see more content like this?",
+        type: "single",
+        options: [
+            {
+                id: "MORE_YES",
+                label: "Yes"
+            },
+            {
+                id: "MORE_NO",
+                label: "No"
+            }
+        ]
+    },
 
-            options: [
-                {
-                    id: "Q_FEELING_LIKED",
-                    label: "I really liked it"
-                },
-                {
-                    id: "Q_FEELING_GOOD",
-                    label: "I liked it"
-                },
-                {
-                    id: "Q_FEELING_NEUTRAL",
-                    label: "It was okay"
-                },
-                {
-                    id: "Q_FEELING_DISLIKED",
-                    label: "I did not like it"
-                }
-            ]
-        },
+    {
+        id: "Q_CONNECTION",
+        text: "Did you feel a personal connection with this Reel?",
+        type: "single",
+        options: [
+            {
+                id: "CONNECTION_YES",
+                label: "Yes"
+            },
+            {
+                id: "CONNECTION_SOMEWHAT",
+                label: "Somewhat"
+            },
+            {
+                id: "CONNECTION_NO",
+                label: "No"
+            }
+        ]
+    },
 
-        {
-            id: "Q_MORE_CONTENT",
-            text: "Would you like to see more reels like this?",
-            hindi: "क्या आप ऐसी और रील्स देखना चाहेंगे?",
-            helper: "Choose one option.",
+    {
+        id: "Q_RATING",
+        text: "How would you rate this Reel?",
+        type: "rating",
+        options: [
+            {
+                id: "RATING_1",
+                label: "1"
+            },
+            {
+                id: "RATING_2",
+                label: "2"
+            },
+            {
+                id: "RATING_3",
+                label: "3"
+            },
+            {
+                id: "RATING_4",
+                label: "4"
+            },
+            {
+                id: "RATING_5",
+                label: "5"
+            }
+        ]
+    },
 
-            options: [
-                {
-                    id: "Q_MORE_CONTENT_YES",
-                    label: "Yes, definitely"
-                },
-                {
-                    id: "Q_MORE_CONTENT_MAYBE",
-                    label: "Maybe"
-                },
-                {
-                    id: "Q_MORE_CONTENT_NO",
-                    label: "Not really"
-                }
-            ]
-        },
-
-        {
-            id: "Q_CONNECTION",
-            text: "How strongly did this reel connect with you?",
-            hindi: "इस रील ने आपको कितनी गहराई से जोड़ा?",
-            helper: "Choose the level that feels closest to your experience.",
-
-            options: [
-                {
-                    id: "Q_CONNECTION_STRONG",
-                    label: "Very strongly"
-                },
-                {
-                    id: "Q_CONNECTION_GOOD",
-                    label: "Quite well"
-                },
-                {
-                    id: "Q_CONNECTION_SOMEWHAT",
-                    label: "Somewhat"
-                },
-                {
-                    id: "Q_CONNECTION_LOW",
-                    label: "Not much"
-                }
-            ]
-        },
-
-        {
-            id: "Q_RATING",
-            text: "What rating would you give this reel?",
-            hindi: "आप इस रील को कितनी रेटिंग देना चाहेंगे?",
-            helper: "Select one rating from 1 to 5.",
-
-            options: [
-                {
-                    id: "Q_RATING_5",
-                    label: "5 — Excellent"
-                },
-                {
-                    id: "Q_RATING_4",
-                    label: "4 — Very good"
-                },
-                {
-                    id: "Q_RATING_3",
-                    label: "3 — Good"
-                },
-                {
-                    id: "Q_RATING_2",
-                    label: "2 — Needs improvement"
-                },
-                {
-                    id: "Q_RATING_1",
-                    label: "1 — Poor"
-                }
-            ]
-        },
-
-        {
-            id: "Q_FEEDBACK",
-            text: "Would you like to share anything in your own words?",
-            hindi: "क्या आप अपने शब्दों में कुछ बताना चाहेंगे?",
-            helper: "Choose one option.",
-
-            options: [
-                {
-                    id: "Q_FEEDBACK_YES",
-                    label: "Yes, I would like to share"
-                },
-                {
-                    id: "Q_FEEDBACK_NO",
-                    label: "No, that's all"
-                }
-            ]
-        }
-    ]
-};
+    {
+        id: "Q_FEEDBACK",
+        text: "Would you like to share anything about this Reel?",
+        type: "textarea"
+    }
+];
 
 
-// =========================================
-// STATE
-// =========================================
+/* =========================================================
+   STATE
+========================================================= */
 
 const state = {
 
     reelId: null,
+
     reel: null,
 
     currentQuestionIndex: 0,
@@ -157,125 +120,103 @@ const state = {
     answers: {},
 
     user: {
-        name: CONFIG.fallbackName,
-        email: CONFIG.fallbackEmail
+        name: "",
+        email: ""
     },
 
-    questionStartedAt: null,
+    timings: {
+        formStartedAt: null,
+        userFormSubmittedAt: null,
+        questionStartedAt: null,
+        questionTimes: {}
+    },
 
-    questionTimings: {},
-
-    formStartedAt: null,
-
-    formCompletedAt: null,
-
-    ttsActive: false,
+    tts: {
+        enabled: true,
+        speaking: false
+    },
 
     submitting: false
 };
 
 
-// =========================================
-// DOM
-// =========================================
+/* =========================================================
+   DOM
+========================================================= */
 
-const elements = {
+const userStep =
+    document.getElementById("user-step");
 
-    app:
-        document.getElementById("feedback-app"),
+const userForm =
+    document.getElementById("user-form");
 
-    userStep:
-        document.getElementById("user-step"),
+const userName =
+    document.getElementById("user-name");
 
-    userForm:
-        document.getElementById("user-form"),
+const userEmail =
+    document.getElementById("user-email");
 
-    userName:
-        document.getElementById("user-name"),
+const userFormError =
+    document.getElementById("user-form-error");
 
-    userEmail:
-        document.getElementById("user-email"),
+const userNextButton =
+    document.getElementById("user-next-button");
 
-    userFormError:
-        document.getElementById("user-form-error"),
+const reelSection =
+    document.getElementById("reel-section");
 
-    reelSection:
-        document.getElementById("reel-section"),
+const reelThumbnail =
+    document.getElementById("reel-thumbnail");
 
-    reelThumbnail:
-        document.getElementById("reel-thumbnail"),
+const thumbnailFallback =
+    document.getElementById("thumbnail-fallback");
 
-    thumbnailFallback:
-        document.getElementById("thumbnail-fallback"),
+const reelTitle =
+    document.getElementById("reel-title");
 
-    reelTitle:
-        document.getElementById("reel-title"),
+const questionsSection =
+    document.getElementById("questions-section");
 
-    questionsSection:
-        document.getElementById("questions-section"),
+const questionContainer =
+    document.getElementById("question-container");
 
-    questionForm:
-        document.getElementById("question-form"),
+const questionNumber =
+    document.getElementById("question-number");
 
-    questionNumber:
-        document.getElementById("question-number"),
+const questionProgress =
+    document.getElementById("question-progress");
 
-    questionText:
-        document.getElementById("question-text"),
+const previousButton =
+    document.getElementById("previous-button");
 
-    questionHelper:
-        document.getElementById("question-helper"),
+const nextQuestionButton =
+    document.getElementById("next-question-button");
 
-    optionsList:
-        document.getElementById("options-list"),
+const submitButton =
+    document.getElementById("submit-button");
 
-    questionError:
-        document.getElementById("question-error"),
+const thankYouSection =
+    document.getElementById("thank-you-section");
 
-    previousButton:
-        document.getElementById("previous-button"),
+const facebookShareButton =
+    document.getElementById("facebook-share-button");
 
-    nextButton:
-        document.getElementById("next-button"),
+const invalidReelSection =
+    document.getElementById("invalid-reel-section");
 
-    nextButtonText:
-        document.getElementById("next-button-text"),
+const generalErrorSection =
+    document.getElementById("general-error-section");
 
-    ttsButton:
-        document.getElementById("tts-button"),
+const generalErrorMessage =
+    document.getElementById("general-error-message");
 
-    progressLabel:
-        document.getElementById("progress-label"),
-
-    progressPercent:
-        document.getElementById("progress-percent"),
-
-    progressFill:
-        document.getElementById("progress-fill"),
-
-    thankYouSection:
-        document.getElementById("thank-you-section"),
-
-    facebookShareButton:
-        document.getElementById("facebook-share-button"),
-
-    invalidReelSection:
-        document.getElementById("invalid-reel-section"),
-
-    generalErrorSection:
-        document.getElementById("general-error-section"),
-
-    generalErrorMessage:
-        document.getElementById("general-error-message"),
-
-    retryButton:
-        document.getElementById("retry-button")
-};
+const retryButton =
+    document.getElementById("retry-button");
 
 
-// =========================================
-// INITIALIZATION
-// =========================================
+/* =========================================================
+   INITIALIZATION
+========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -285,46 +226,28 @@ document.addEventListener(
 
 async function initialize() {
 
-    try {
+    state.timings.formStartedAt =
+        Date.now();
 
-        state.reelId =
-            getReelIdFromUrl();
+    setupEventListeners();
 
+    state.reelId =
+        getReelIdFromUrl();
 
-        if (!state.reelId) {
+    if (!state.reelId) {
 
-            showInvalidReel();
+        showInvalidReel();
 
-            return;
-        }
-
-
-        state.formStartedAt =
-            Date.now();
-
-
-        setupEventListeners();
-
-
-        await loadReel();
-
-    } catch (error) {
-
-        console.error(
-            "Initialization error:",
-            error
-        );
-
-        showGeneralError(
-            getFriendlyError(error)
-        );
+        return;
     }
+
+    await loadReel();
 }
 
 
-// =========================================
-// URL / REEL ID
-// =========================================
+/* =========================================================
+   URL
+========================================================= */
 
 function getReelIdFromUrl() {
 
@@ -333,33 +256,29 @@ function getReelIdFromUrl() {
             window.location.search
         );
 
-
-    const reelId =
-        params.get("reel");
-
-
-    if (!reelId) {
-        return null;
-    }
-
-
-    return reelId.trim();
+    return (
+        params.get("reel") ||
+        ""
+    )
+        .trim()
+        .toUpperCase();
 }
 
 
-// =========================================
-// LOAD REEL
-// =========================================
+/* =========================================================
+   LOAD REEL
+========================================================= */
 
 async function loadReel() {
 
     try {
 
+        hideAllSections();
+
         const reel =
             await getReel(
                 state.reelId
             );
-
 
         if (!reel) {
 
@@ -368,10 +287,8 @@ async function loadReel() {
             return;
         }
 
-
         state.reel =
             reel;
-
 
         renderReel(
             reel
@@ -385,15 +302,15 @@ async function loadReel() {
         );
 
         showGeneralError(
-            getFriendlyError(error)
+            "Unable to load this Reel right now. Please try again."
         );
     }
 }
 
 
-// =========================================
-// RENDER REEL
-// =========================================
+/* =========================================================
+   RENDER REEL
+========================================================= */
 
 function renderReel(reel) {
 
@@ -401,194 +318,379 @@ function renderReel(reel) {
         reel.title ||
         "Rudra Bhakti Reel";
 
-
-    elements.reelTitle.textContent =
-        title;
-
-
     const thumbnail =
         reel.thumbnail ||
-        reel.thumbnailUrl ||
         "";
 
+    if (reelTitle) {
 
-    if (thumbnail) {
+        reelTitle.textContent =
+            title;
+    }
 
-        elements.reelThumbnail.src =
-            thumbnail;
+    if (reelThumbnail) {
 
-        elements.reelThumbnail.alt =
-            `${title} preview`;
+        if (thumbnail) {
 
-        elements.reelThumbnail.hidden =
-            false;
+            reelThumbnail.src =
+                thumbnail;
 
-        elements.thumbnailFallback.hidden =
-            true;
+            reelThumbnail.alt =
+                title;
 
-    } else {
+            reelThumbnail.style.display =
+                "block";
 
-        elements.reelThumbnail.hidden =
-            true;
+            if (thumbnailFallback) {
+                thumbnailFallback.style.display =
+                    "none";
+            }
 
-        elements.thumbnailFallback.hidden =
-            false;
+        } else {
+
+            reelThumbnail.removeAttribute(
+                "src"
+            );
+
+            reelThumbnail.style.display =
+                "none";
+
+            if (thumbnailFallback) {
+                thumbnailFallback.style.display =
+                    "flex";
+            }
+        }
+
+        reelThumbnail.onerror =
+            handleThumbnailError;
+    }
+
+    /*
+     * Update browser metadata dynamically.
+     */
+    updatePageMetadata(
+        reel
+    );
+
+    showElement(
+        userStep
+    );
+}
+
+
+/* =========================================================
+   DYNAMIC PAGE METADATA
+========================================================= */
+
+function updatePageMetadata(reel) {
+
+    const title =
+        reel?.title ||
+        "Rudra Bhakti Reel Feedback";
+
+    const description =
+        `Share your feedback on the Rudra Bhakti Reel: ${title}`;
+
+    /*
+     * Browser tab title.
+     */
+    document.title =
+        `${title} — Rudra Bhakti Feedback`;
+
+
+    /*
+     * Standard description.
+     */
+    setMetaContent(
+        "name",
+        "description",
+        description
+    );
+
+
+    /*
+     * Open Graph metadata.
+     *
+     * These are updated for the current browser
+     * document. Social crawlers may still require
+     * server-generated HTML to read them before JS
+     * executes.
+     */
+    setMetaContent(
+        "property",
+        "og:title",
+        title
+    );
+
+    setMetaContent(
+        "property",
+        "og:description",
+        description
+    );
+
+    setMetaContent(
+        "property",
+        "og:type",
+        "website"
+    );
+
+    setMetaContent(
+        "property",
+        "og:url",
+        window.location.href
+    );
+
+    if (reel?.thumbnail) {
+
+        setMetaContent(
+            "property",
+            "og:image",
+            reel.thumbnail
+        );
     }
 
 
-    elements.reelThumbnail.onerror =
-        handleThumbnailError;
+    /*
+     * Twitter metadata.
+     */
+    setMetaContent(
+        "name",
+        "twitter:card",
+        "summary_large_image"
+    );
 
+    setMetaContent(
+        "name",
+        "twitter:title",
+        title
+    );
 
-    showUserStep();
+    setMetaContent(
+        "name",
+        "twitter:description",
+        description
+    );
+
+    if (reel?.thumbnail) {
+
+        setMetaContent(
+            "name",
+            "twitter:image",
+            reel.thumbnail
+        );
+    }
 }
 
+
+function setMetaContent(
+    attribute,
+    attributeValue,
+    content
+) {
+
+    let element =
+        document.querySelector(
+            `meta[${attribute}="${attributeValue}"]`
+        );
+
+    if (!element) {
+
+        element =
+            document.createElement("meta");
+
+        element.setAttribute(
+            attribute,
+            attributeValue
+        );
+
+        document.head.appendChild(
+            element
+        );
+    }
+
+    element.setAttribute(
+        "content",
+        content
+    );
+}
+
+
+/* =========================================================
+   THUMBNAIL ERROR
+========================================================= */
 
 function handleThumbnailError() {
 
-    elements.reelThumbnail.hidden =
-        true;
+    if (reelThumbnail) {
 
-    elements.thumbnailFallback.hidden =
-        false;
+        reelThumbnail.style.display =
+            "none";
+    }
+
+    if (thumbnailFallback) {
+
+        thumbnailFallback.style.display =
+            "flex";
+    }
 }
 
 
-// =========================================
-// EVENT LISTENERS
-// =========================================
+/* =========================================================
+   EVENT LISTENERS
+========================================================= */
 
 function setupEventListeners() {
 
-    elements.userForm?.addEventListener(
-        "submit",
-        handleUserFormSubmit
-    );
+    if (userForm) {
 
+        userForm.addEventListener(
+            "submit",
+            handleUserSubmit
+        );
+    }
 
-    elements.previousButton?.addEventListener(
-        "click",
-        handlePrevious
-    );
+    if (previousButton) {
 
+        previousButton.addEventListener(
+            "click",
+            handlePreviousQuestion
+        );
+    }
 
-    elements.nextButton?.addEventListener(
-        "click",
-        handleNext
-    );
+    if (nextQuestionButton) {
 
+        nextQuestionButton.addEventListener(
+            "click",
+            handleNextQuestion
+        );
+    }
 
-    elements.ttsButton?.addEventListener(
-        "click",
-        handleTextToSpeech
-    );
+    if (submitButton) {
 
+        submitButton.addEventListener(
+            "click",
+            handleSubmit
+        );
+    }
 
-    elements.facebookShareButton?.addEventListener(
-        "click",
-        handleFacebookShare
-    );
+    if (facebookShareButton) {
 
+        facebookShareButton.addEventListener(
+            "click",
+            handleFacebookShare
+        );
+    }
 
-    elements.retryButton?.addEventListener(
-        "click",
-        handleRetry
-    );
+    if (retryButton) {
 
+        retryButton.addEventListener(
+            "click",
+            async () => {
 
-    window.addEventListener(
-        "beforeunload",
-        stopSpeech
-    );
+                await loadReel();
+            }
+        );
+    }
 }
 
 
-// =========================================
-// USER INFORMATION
-// =========================================
+/* =========================================================
+   USER FORM
+========================================================= */
 
-function handleUserFormSubmit(event) {
+function handleUserSubmit(event) {
 
     event.preventDefault();
 
-
-    clearUserError();
-
+    clearMessage(
+        userFormError
+    );
 
     const name =
-        elements.userName.value.trim();
-
+        userName?.value.trim();
 
     const email =
-        elements.userEmail.value.trim();
+        userEmail?.value.trim();
 
+    if (!name) {
 
-    if (
-        email &&
-        !isValidEmail(email)
-    ) {
-
-        showUserError(
-            "Please enter a valid email address or leave it blank."
+        showMessage(
+            userFormError,
+            "Please enter your name."
         );
 
-        elements.userEmail.focus();
+        userName?.focus();
 
         return;
     }
 
+    if (!email) {
+
+        showMessage(
+            userFormError,
+            "Please enter your email."
+        );
+
+        userEmail?.focus();
+
+        return;
+    }
+
+    if (!isValidEmail(email)) {
+
+        showMessage(
+            userFormError,
+            "Please enter a valid email address."
+        );
+
+        userEmail?.focus();
+
+        return;
+    }
 
     state.user.name =
-        name ||
-        CONFIG.fallbackName;
-
+        name;
 
     state.user.email =
-        email ||
-        CONFIG.fallbackEmail;
+        email;
 
+    state.timings.userFormSubmittedAt =
+        Date.now();
 
     startQuestionFlow();
 }
 
 
-// =========================================
-// QUESTION FLOW
-// =========================================
+function isValidEmail(email) {
+
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(email);
+}
+
+
+/* =========================================================
+   QUESTION FLOW
+========================================================= */
 
 function startQuestionFlow() {
+
+    hideElement(
+        userStep
+    );
+
+    showElement(
+        reelSection
+    );
+
+    showElement(
+        questionsSection
+    );
 
     state.currentQuestionIndex =
         0;
 
-
-    state.questionStartedAt =
+    state.timings.questionStartedAt =
         Date.now();
-
-
-    elements.userStep.hidden =
-        true;
-
-
-    elements.reelSection.hidden =
-        false;
-
-
-    elements.questionsSection.hidden =
-        false;
-
-
-    elements.thankYouSection.hidden =
-        true;
-
-
-    elements.invalidReelSection.hidden =
-        true;
-
-
-    elements.generalErrorSection.hidden =
-        true;
-
 
     renderQuestion();
 }
@@ -596,414 +698,559 @@ function startQuestionFlow() {
 
 function renderQuestion() {
 
-    stopSpeech();
-
-
     const question =
-        CONFIG.questions[
+        QUESTIONS[
             state.currentQuestionIndex
         ];
 
-
-    if (!question) {
-
-        completeFeedback();
-
-        return;
-    }
-
+    if (!question) return;
 
     const total =
-        CONFIG.questions.length;
+        QUESTIONS.length;
 
+    const current =
+        state.currentQuestionIndex + 1;
 
-    const index =
-        state.currentQuestionIndex;
+    if (questionNumber) {
 
+        questionNumber.textContent =
+            `${current} / ${total}`;
+    }
 
-    const questionNumber =
-        String(index + 1).padStart(
-            2,
-            "0"
-        );
+    if (questionProgress) {
 
+        questionProgress.style.width =
+            `${(current / total) * 100}%`;
+    }
 
-    const percent =
-        Math.round(
-            ((index + 1) / total) * 100
-        );
+    if (questionContainer) {
 
+        questionContainer.innerHTML =
+            buildQuestionHtml(
+                question
+            );
+    }
 
-    elements.questionNumber.textContent =
-        questionNumber;
+    if (previousButton) {
 
+        previousButton.disabled =
+            state.currentQuestionIndex === 0;
+    }
 
-    elements.questionText.textContent =
-        question.text;
+    const isLast =
+        state.currentQuestionIndex ===
+        total - 1;
 
+    if (nextQuestionButton) {
 
-    elements.questionHelper.textContent =
-        question.helper;
+        nextQuestionButton.style.display =
+            isLast
+                ? "none"
+                : "inline-flex";
+    }
 
+    if (submitButton) {
 
-    elements.progressLabel.textContent =
-        `Question ${index + 1} of ${total}`;
+        submitButton.style.display =
+            isLast
+                ? "inline-flex"
+                : "none";
+    }
 
-
-    elements.progressPercent.textContent =
-        `${percent}%`;
-
-
-    elements.progressFill.style.width =
-        `${percent}%`;
-
-
-    renderOptions(
+    restoreAnswer(
         question
     );
 
-
-    elements.previousButton.hidden =
-        index === 0;
-
-
-    const isLast =
-        index === total - 1;
-
-
-    elements.nextButtonText.textContent =
-        isLast
-            ? "Submit feedback"
-            : "Next";
-
-
-    clearQuestionError();
-
-
-    state.questionStartedAt =
-        Date.now();
-}
-
-
-// =========================================
-// RENDER OPTIONS
-// =========================================
-
-function renderOptions(question) {
-
-    elements.optionsList.innerHTML =
-        "";
-
-
-    const selectedId =
-        state.answers[
-            question.id
-        ]?.optionId ||
-        "";
-
-
-    question.options.forEach(
-        (option, optionIndex) => {
-
-            const wrapper =
-                document.createElement("div");
-
-
-            wrapper.className =
-                "option-item";
-
-
-            const inputId =
-                `${question.id}_${option.id}`;
-
-
-            const input =
-                document.createElement("input");
-
-
-            input.type =
-                "radio";
-
-            input.name =
-                question.id;
-
-            input.id =
-                inputId;
-
-            input.value =
-                option.id;
-
-            input.className =
-                "option-input";
-
-            input.checked =
-                selectedId === option.id;
-
-
-            input.addEventListener(
-                "change",
-                () => {
-
-                    recordAnswer(
-                        question,
-                        option
-                    );
-
-                }
-            );
-
-
-            const label =
-                document.createElement("label");
-
-
-            label.className =
-                "option-label";
-
-
-            label.htmlFor =
-                inputId;
-
-
-            const indicator =
-                document.createElement("span");
-
-
-            indicator.className =
-                "option-indicator";
-
-
-            indicator.setAttribute(
-                "aria-hidden",
-                "true"
-            );
-
-
-            const text =
-                document.createElement("span");
-
-
-            text.className =
-                "option-text";
-
-
-            text.textContent =
-                option.label;
-
-
-            label.appendChild(
-                indicator
-            );
-
-
-            label.appendChild(
-                text
-            );
-
-
-            wrapper.appendChild(
-                input
-            );
-
-
-            wrapper.appendChild(
-                label
-            );
-
-
-            elements.optionsList.appendChild(
-                wrapper
-            );
-        }
+    attachQuestionListeners(
+        question
     );
 }
 
 
-// =========================================
-// RECORD ANSWER
-// =========================================
+/* =========================================================
+   QUESTION HTML
+========================================================= */
 
-function recordAnswer(
-    question,
-    option
-) {
+function buildQuestionHtml(question) {
 
-    const now =
-        Date.now();
+    let html = `
 
+        <div class="question-card">
 
-    const started =
-        state.questionStartedAt ||
-        now;
+            <div class="question-heading-row">
 
+                <h2 class="question-text">
+                    ${escapeHtml(
+                        question.text
+                    )}
+                </h2>
 
-    const duration =
-        Math.max(
-            0,
-            now - started
+                <button
+                    type="button"
+                    class="voice-button"
+                    data-tts="${escapeHtml(
+                        question.text
+                    )}"
+                    aria-label="Listen to question"
+                >
+                    <svg
+                        viewBox="0 0 24 24"
+                        width="18"
+                        height="18"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <path
+                            d="M4 9v6"
+                        ></path>
+
+                        <path
+                            d="M8 6v12"
+                        ></path>
+
+                        <path
+                            d="M12 4v16"
+                        ></path>
+
+                        <path
+                            d="M16 8v8"
+                        ></path>
+
+                        <path
+                            d="M20 10v4"
+                        ></path>
+                    </svg>
+                </button>
+
+            </div>
+    `;
+
+    if (
+        question.type === "single" ||
+        question.type === "rating"
+    ) {
+
+        html += `
+            <div
+                class="question-options ${
+                    question.type === "rating"
+                        ? "rating-options"
+                        : ""
+                }"
+            >
+        `;
+
+        question.options.forEach(
+            (option) => {
+
+                html += `
+                    <button
+                        type="button"
+                        class="answer-option"
+                        data-option-id="${escapeHtml(
+                            option.id
+                        )}"
+                    >
+                        <span class="option-label">
+                            ${escapeHtml(
+                                option.label
+                            )}
+                        </span>
+                    </button>
+                `;
+            }
         );
 
+        html += `
+            </div>
+        `;
 
-    state.answers[
-        question.id
-    ] = {
+    } else if (
+        question.type === "textarea"
+    ) {
 
-        questionId:
-            question.id,
+        html += `
+            <textarea
+                id="feedback-textarea"
+                class="feedback-textarea"
+                rows="5"
+                placeholder="Your thoughts..."
+            ></textarea>
+        `;
+    }
 
-        questionText:
-            question.text,
+    html += `
+        </div>
+    `;
 
-        optionId:
-            option.id,
-
-        optionText:
-            option.label,
-
-        answeredAt:
-            now
-
-    };
-
-
-    state.questionTimings[
-        question.id
-    ] = {
-
-        questionId:
-            question.id,
-
-        responseTimeMs:
-            duration,
-
-        responseTimeSeconds:
-            Number(
-                (
-                    duration / 1000
-                ).toFixed(2)
-            )
-
-    };
-
-
-    clearQuestionError();
+    return html;
 }
 
 
-// =========================================
-// NEXT
-// =========================================
+/* =========================================================
+   QUESTION LISTENERS
+========================================================= */
 
-function handleNext() {
+function attachQuestionListeners(
+    question
+) {
 
-    const question =
-        CONFIG.questions[
-            state.currentQuestionIndex
-        ];
+    const optionButtons =
+        document.querySelectorAll(
+            ".answer-option"
+        );
+
+    optionButtons.forEach(
+        (button) => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const optionId =
+                        button.dataset.optionId;
+
+                    state.answers[
+                        question.id
+                    ] = optionId;
+
+                    optionButtons.forEach(
+                        (item) => {
+                            item.classList.remove(
+                                "selected"
+                            );
+                        }
+                    );
+
+                    button.classList.add(
+                        "selected"
+                    );
+                }
+            );
+        }
+    );
 
 
-    if (!question) {
-        return;
+    const voiceButton =
+        document.querySelector(
+            ".voice-button"
+        );
+
+    if (voiceButton) {
+
+        voiceButton.addEventListener(
+            "click",
+            () => {
+
+                speakText(
+                    voiceButton.dataset.tts
+                );
+            }
+        );
     }
 
+
+    const textarea =
+        document.getElementById(
+            "feedback-textarea"
+        );
+
+    if (textarea) {
+
+        textarea.addEventListener(
+            "input",
+            () => {
+
+                state.answers[
+                    question.id
+                ] =
+                    textarea.value;
+            }
+        );
+    }
+}
+
+
+/* =========================================================
+   RESTORE ANSWER
+========================================================= */
+
+function restoreAnswer(question) {
 
     const answer =
         state.answers[
             question.id
         ];
 
-
-    if (!answer) {
-
-        showQuestionError(
-            "Please select an option to continue."
-        );
-
+    if (
+        answer === undefined ||
+        answer === null
+    ) {
         return;
     }
 
+    if (
+        question.type === "single" ||
+        question.type === "rating"
+    ) {
 
-    const isLast =
-        state.currentQuestionIndex ===
-        CONFIG.questions.length - 1;
+        const button =
+            document.querySelector(
+                `[data-option-id="${CSS.escape(
+                    answer
+                )}"]`
+            );
+
+        if (button) {
+
+            button.classList.add(
+                "selected"
+            );
+        }
+    }
+
+    if (
+        question.type === "textarea"
+    ) {
+
+        const textarea =
+            document.getElementById(
+                "feedback-textarea"
+            );
+
+        if (textarea) {
+
+            textarea.value =
+                answer;
+        }
+    }
+}
 
 
-    if (isLast) {
+/* =========================================================
+   NEXT QUESTION
+========================================================= */
 
-        completeFeedback();
+function handleNextQuestion() {
 
+    if (
+        !validateCurrentQuestion()
+    ) {
         return;
     }
 
+    recordQuestionTiming();
 
-    state.currentQuestionIndex += 1;
+    state.currentQuestionIndex++;
 
+    state.timings.questionStartedAt =
+        Date.now();
 
     renderQuestion();
 }
 
 
-// =========================================
-// PREVIOUS
-// =========================================
+/* =========================================================
+   PREVIOUS QUESTION
+========================================================= */
 
-function handlePrevious() {
+function handlePreviousQuestion() {
+
+    recordQuestionTiming();
 
     if (
         state.currentQuestionIndex <= 0
     ) {
-
         return;
     }
 
+    state.currentQuestionIndex--;
 
-    stopSpeech();
-
-
-    state.currentQuestionIndex -= 1;
-
+    state.timings.questionStartedAt =
+        Date.now();
 
     renderQuestion();
 }
 
 
-// =========================================
-// COMPLETE FEEDBACK
-// =========================================
+/* =========================================================
+   VALIDATE QUESTION
+========================================================= */
 
-async function completeFeedback() {
+function validateCurrentQuestion() {
+
+    const question =
+        QUESTIONS[
+            state.currentQuestionIndex
+        ];
+
+    if (!question) {
+        return true;
+    }
+
+    const answer =
+        state.answers[
+            question.id
+        ];
+
+    if (
+        question.type === "textarea"
+    ) {
+
+        return true;
+    }
+
+    if (
+        answer === undefined ||
+        answer === null ||
+        answer === ""
+    ) {
+
+        showQuestionError(
+            "Please select an answer to continue."
+        );
+
+        return false;
+    }
+
+    return true;
+}
+
+
+function showQuestionError(
+    message
+) {
+
+    let error =
+        document.getElementById(
+            "question-error"
+        );
+
+    if (!error) {
+
+        error =
+            document.createElement(
+                "div"
+            );
+
+        error.id =
+            "question-error";
+
+        error.className =
+            "question-error";
+
+        questionContainer?.appendChild(
+            error
+        );
+    }
+
+    error.textContent =
+        message;
+}
+
+
+/* =========================================================
+   QUESTION TIMING
+========================================================= */
+
+function recordQuestionTiming() {
+
+    const question =
+        QUESTIONS[
+            state.currentQuestionIndex
+        ];
+
+    if (!question) return;
+
+    const started =
+        state.timings.questionStartedAt;
+
+    if (!started) return;
+
+    const elapsed =
+        Date.now() - started;
+
+    state.timings.questionTimes[
+        question.id
+    ] = elapsed;
+}
+
+
+/* =========================================================
+   SUBMIT
+========================================================= */
+
+async function handleSubmit() {
+
+    if (
+        !validateCurrentQuestion()
+    ) {
+        return;
+    }
+
+    recordQuestionTiming();
 
     if (state.submitting) {
         return;
     }
 
-
     state.submitting =
         true;
 
+    if (submitButton) {
+        submitButton.disabled =
+            true;
+    }
 
-    stopSpeech();
-
-
-    setSubmitState(
-        true
-    );
-
-
-    state.formCompletedAt =
+    const completedAt =
         Date.now();
 
+    const totalTime =
+        completedAt -
+        (
+            state.timings.formStartedAt ||
+            completedAt
+        );
+
+    const feedback = {
+
+        reelId:
+            state.reelId,
+
+        user: {
+            name:
+                state.user.name,
+
+            email:
+                state.user.email
+        },
+
+        answers:
+            state.answers,
+
+        timings: {
+            formStartedAt:
+                state.timings.formStartedAt,
+
+            userFormSubmittedAt:
+                state.timings.userFormSubmittedAt,
+
+            questionTimes:
+                state.timings.questionTimes,
+
+            totalTime
+        }
+    };
 
     try {
 
-        const payload =
-            buildFeedbackPayload();
-
-
         await saveFeedback(
-            payload
+            feedback
         );
-
 
         showThankYou();
 
@@ -1014,274 +1261,94 @@ async function completeFeedback() {
             error
         );
 
+        showQuestionError(
+            "Unable to submit your feedback. Please try again."
+        );
+
+        if (submitButton) {
+            submitButton.disabled =
+                false;
+        }
 
         state.submitting =
             false;
-
-
-        setSubmitState(
-            false
-        );
-
-
-        showQuestionError(
-            getFriendlyError(error)
-        );
-
     }
 }
 
 
-// =========================================
-// BUILD FEEDBACK PAYLOAD
-// =========================================
+/* =========================================================
+   THANK YOU
+========================================================= */
 
-function buildFeedbackPayload() {
+function showThankYou() {
 
-    const submittedAt =
-        state.formCompletedAt ||
-        Date.now();
-
-
-    const formDuration =
-        state.formStartedAt
-            ? submittedAt -
-              state.formStartedAt
-            : 0;
-
-
-    const answers =
-        {};
-
-
-    Object.entries(
-        state.answers
-    ).forEach(
-        ([questionId, answer]) => {
-
-            answers[questionId] = {
-                questionId:
-                    answer.questionId,
-
-                questionText:
-                    answer.questionText,
-
-                optionId:
-                    answer.optionId,
-
-                optionText:
-                    answer.optionText,
-
-                answeredAt:
-                    answer.answeredAt,
-
-                responseTimeMs:
-                    state.questionTimings[
-                        questionId
-                    ]?.responseTimeMs ||
-                    0,
-
-                responseTimeSeconds:
-                    state.questionTimings[
-                        questionId
-                    ]?.responseTimeSeconds ||
-                    0
-            };
-        }
+    hideElement(
+        questionsSection
     );
 
+    showElement(
+        thankYouSection
+    );
 
-    const ratingAnswer =
-        state.answers.Q_RATING;
+    if (facebookShareButton) {
 
+        facebookShareButton.dataset.url =
+            window.location.href;
+    }
 
-    const rating =
-        extractRating(
-            ratingAnswer
-        );
-
-
-    return {
-
-        reelId:
-            state.reelId,
-
-        reelTitle:
-            state.reel?.title ||
-            "Unknown Reel",
-
-        reelUrl:
-            state.reel?.facebookUrl ||
-            state.reel?.url ||
-            "",
-
-        user: {
-
-            name:
-                state.user.name,
-
-            email:
-                state.user.email
-
-        },
-
-        answers,
-
-        rating,
-
-        questionCount:
-            CONFIG.questions.length,
-
-        answeredCount:
-            Object.keys(
-                state.answers
-            ).length,
-
-        questionTimings:
-            state.questionTimings,
-
-        formStartedAt:
-            state.formStartedAt,
-
-        formCompletedAt:
-            submittedAt,
-
-        totalResponseTimeMs:
-            formDuration,
-
-        totalResponseTimeSeconds:
-            Number(
-                (
-                    formDuration / 1000
-                ).toFixed(2)
-            ),
-
-        userAgent:
-            navigator.userAgent,
-
-        language:
-            navigator.language ||
-            "",
-
-        screenWidth:
-            window.innerWidth,
-
-        screenHeight:
-            window.innerHeight,
-
-        submittedAt
-    };
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
 
 
-// =========================================
-// RATING
-// =========================================
+/* =========================================================
+   FACEBOOK SHARE
+========================================================= */
 
-function extractRating(answer) {
+function handleFacebookShare() {
 
-    if (!answer?.optionId) {
-        return null;
-    }
+    const shareUrl =
+        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+            window.location.href
+        )}`;
 
-
-    const match =
-        answer.optionId.match(
-            /Q_RATING_(\d+)/
-        );
-
-
-    if (!match) {
-        return null;
-    }
-
-
-    return Number(
-        match[1]
+    window.open(
+        shareUrl,
+        "_blank",
+        "noopener,noreferrer"
     );
 }
 
 
-// =========================================
-// TEXT TO SPEECH
-// =========================================
+/* =========================================================
+   TEXT TO SPEECH
+========================================================= */
 
-function handleTextToSpeech() {
+function speakText(text) {
 
     if (
         !("speechSynthesis" in window)
     ) {
-
-        showQuestionError(
-            "Text to speech is not supported by this browser."
-        );
-
         return;
     }
 
-
-    const question =
-        CONFIG.questions[
-            state.currentQuestionIndex
-        ];
-
-
-    if (!question) {
-        return;
-    }
-
-
-    if (
-        window.speechSynthesis.speaking
-    ) {
-
-        stopSpeech();
-
-        return;
-    }
-
+    window.speechSynthesis.cancel();
 
     const utterance =
         new SpeechSynthesisUtterance(
-            question.hindi
+            text
         );
-
 
     utterance.lang =
         "hi-IN";
 
-
     utterance.rate =
-        0.88;
-
+        0.9;
 
     utterance.pitch =
         1;
-
-
-    utterance.volume =
-        1;
-
-
-    utterance.onstart =
-        () => {
-
-            state.ttsActive =
-                true;
-
-            elements.ttsButton.classList.add(
-                "speaking"
-            );
-        };
-
-
-    utterance.onend =
-        resetTTSButton;
-
-
-    utterance.onerror =
-        resetTTSButton;
-
 
     window.speechSynthesis.speak(
         utterance
@@ -1289,327 +1356,120 @@ function handleTextToSpeech() {
 }
 
 
-function stopSpeech() {
+/* =========================================================
+   SECTION HELPERS
+========================================================= */
 
-    if (
-        "speechSynthesis" in window
-    ) {
+function hideAllSections() {
 
-        window.speechSynthesis.cancel();
-    }
-
-
-    resetTTSButton();
+    hideElement(userStep);
+    hideElement(reelSection);
+    hideElement(questionsSection);
+    hideElement(thankYouSection);
+    hideElement(invalidReelSection);
+    hideElement(generalErrorSection);
 }
-
-
-function resetTTSButton() {
-
-    state.ttsActive =
-        false;
-
-
-    elements.ttsButton?.classList.remove(
-        "speaking"
-    );
-}
-
-
-// =========================================
-// FACEBOOK SHARE
-// =========================================
-
-function handleFacebookShare() {
-
-    const currentUrl =
-        window.location.href;
-
-
-    const shareUrl =
-        "https://www.facebook.com/sharer/sharer.php?u=" +
-        encodeURIComponent(
-            currentUrl
-        );
-
-
-    const width =
-        620;
-
-    const height =
-        650;
-
-
-    const left =
-        Math.max(
-            0,
-            (
-                window.screen.width -
-                width
-            ) / 2
-        );
-
-
-    const top =
-        Math.max(
-            0,
-            (
-                window.screen.height -
-                height
-            ) / 2
-        );
-
-
-    window.open(
-        shareUrl,
-        "facebook-share",
-        `width=${width},height=${height},left=${left},top=${top},noopener,noreferrer`
-    );
-}
-
-
-// =========================================
-// UI STATES
-// =========================================
-
-function showUserStep() {
-
-    elements.userStep.hidden =
-        false;
-
-    elements.reelSection.hidden =
-        true;
-
-    elements.questionsSection.hidden =
-        true;
-
-    elements.thankYouSection.hidden =
-        true;
-
-    elements.invalidReelSection.hidden =
-        true;
-
-    elements.generalErrorSection.hidden =
-        true;
-}
-
-
-function showThankYou() {
-
-    elements.userStep.hidden =
-        true;
-
-    elements.reelSection.hidden =
-        true;
-
-    elements.questionsSection.hidden =
-        true;
-
-    elements.invalidReelSection.hidden =
-        true;
-
-    elements.generalErrorSection.hidden =
-        true;
-
-    elements.thankYouSection.hidden =
-        false;
-
-
-    setSubmitState(
-        false
-    );
-}
-
 
 function showInvalidReel() {
 
-    elements.userStep.hidden =
-        true;
+    hideAllSections();
 
-    elements.reelSection.hidden =
-        true;
-
-    elements.questionsSection.hidden =
-        true;
-
-    elements.thankYouSection.hidden =
-        true;
-
-    elements.generalErrorSection.hidden =
-        true;
-
-    elements.invalidReelSection.hidden =
-        false;
+    showElement(
+        invalidReelSection
+    );
 }
 
+function showGeneralError(message) {
 
-function showGeneralError(
-    message
-) {
+    hideAllSections();
 
-    elements.userStep.hidden =
-        true;
+    if (generalErrorMessage) {
 
-    elements.reelSection.hidden =
-        true;
+        generalErrorMessage.textContent =
+            message;
+    }
 
-    elements.questionsSection.hidden =
-        true;
-
-    elements.thankYouSection.hidden =
-        true;
-
-    elements.invalidReelSection.hidden =
-        true;
-
-    elements.generalErrorSection.hidden =
-        false;
-
-
-    elements.generalErrorMessage.textContent =
-        message;
+    showElement(
+        generalErrorSection
+    );
 }
 
+function showElement(element) {
 
-// =========================================
-// RETRY
-// =========================================
-
-async function handleRetry() {
-
-    elements.generalErrorSection.hidden =
-        true;
-
-
-    try {
-
-        await loadReel();
-
-    } catch (error) {
-
-        console.error(
-            "Retry error:",
-            error
+    if (element) {
+        element.classList.remove(
+            "hidden"
         );
+    }
+}
 
-        showGeneralError(
-            getFriendlyError(error)
+function hideElement(element) {
+
+    if (element) {
+        element.classList.add(
+            "hidden"
         );
     }
 }
 
 
-// =========================================
-// SUBMIT STATE
-// =========================================
+/* =========================================================
+   MESSAGE HELPERS
+========================================================= */
 
-function setSubmitState(
-    submitting
-) {
-
-    if (!elements.nextButton) {
-        return;
-    }
-
-
-    elements.nextButton.disabled =
-        submitting;
-
-
-    if (submitting) {
-
-        elements.nextButtonText.textContent =
-            "Submitting...";
-
-    } else {
-
-        const isLast =
-            state.currentQuestionIndex ===
-            CONFIG.questions.length - 1;
-
-
-        elements.nextButtonText.textContent =
-            isLast
-                ? "Submit feedback"
-                : "Next";
-    }
-}
-
-
-// =========================================
-// VALIDATION
-// =========================================
-
-function isValidEmail(email) {
-
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        .test(email);
-}
-
-
-// =========================================
-// ERROR UI
-// =========================================
-
-function showUserError(
+function showMessage(
+    element,
     message
 ) {
 
-    elements.userFormError.textContent =
+    if (!element) return;
+
+    element.textContent =
         message;
 
-    elements.userFormError.hidden =
-        false;
+    element.style.display =
+        "block";
 }
 
+function clearMessage(element) {
 
-function clearUserError() {
+    if (!element) return;
 
-    elements.userFormError.textContent =
+    element.textContent =
         "";
 
-    elements.userFormError.hidden =
-        true;
-}
-
-
-function showQuestionError(
-    message
-) {
-
-    elements.questionError.textContent =
-        message;
-
-    elements.questionError.hidden =
-        false;
-}
-
-
-function clearQuestionError() {
-
-    elements.questionError.textContent =
+    element.style.display =
         "";
-
-    elements.questionError.hidden =
-        true;
 }
 
 
-// =========================================
-// FRIENDLY ERROR HANDLING
-// =========================================
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
 
-function getFriendlyError(
-    error
-) {
+function escapeHtml(value) {
 
-    if (
-        error instanceof Error &&
-        error.message
-    ) {
-
-        return error.message;
-    }
-
-
-    return "Something went wrong. Please try again.";
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 }
