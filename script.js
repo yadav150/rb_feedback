@@ -6,7 +6,7 @@
 import {
     getReel,
     saveFeedback
-} from "firebase-service.js";
+} from "./firebase-service.js";
 
 
 // =========================================
