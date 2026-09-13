@@ -1,10 +1,12 @@
 // =========================================
 // RUDRA BHAKTI
 // FIREBASE SERVICE
+// REALTIME DATABASE
 // =========================================
 
 
-// Firebase imports
+// Firebase SDK imports
+
 import {
     initializeApp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
@@ -14,24 +16,19 @@ import {
     getDatabase,
     ref,
     get,
-    set,
     push,
-    update,
-    remove,
-    query,
-    orderByChild
+    set,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
 
-// Auth imports
-import {
-    getAuth
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
 
 
 // =========================================
 // FIREBASE CONFIG
 // =========================================
+
 
 const firebaseConfig = {
 
@@ -58,58 +55,96 @@ const firebaseConfig = {
 
     measurementId:
         "G-RYKGBGSLVB"
-};
 
-
-// =========================================
-// INITIALIZE
-// =========================================
-
-const app =
-    initializeApp(firebaseConfig);
-
-
-const database =
-    getDatabase(app);
-
-
-const auth =
-    getAuth(app);
-
-
-
-export {
-    database,
-    auth
 };
 
 
 
-// =========================================
-// CONSTANT
-// =========================================
-
-const ADMIN_UID =
-    "CEozlrvQkuMUox2gKTlQOzdc3ZS2";
-
 
 
 // =========================================
-// GET REEL
+// INITIALIZE FIREBASE
 // =========================================
+
+
+let app;
+
+let database;
+
+
+try {
+
+
+    app =
+        initializeApp(
+            firebaseConfig
+        );
+
+
+    database =
+        getDatabase(
+            app
+        );
+
+
+}
+catch(error){
+
+
+    console.error(
+        "Firebase initialization failed:",
+        error
+    );
+
+
+}
+
+
+
+
+
+// =========================================
+// GET REEL DATA
+// =========================================
+//
+// Database expected:
+//
+// reels
+//   └── RB001
+//        ├── title
+//        ├── thumbnail
+//        └── facebookUrl
+//
+// =========================================
+
 
 export async function getReel(
     reelId
 ){
 
-    if(!reelId){
+
+    if(!database){
+
         throw new Error(
-            "Reel ID missing"
+            "Firebase is not initialized."
         );
+
     }
 
 
-    try{
+
+    if(!reelId){
+
+        throw new Error(
+            "Reel ID is missing."
+        );
+
+    }
+
+
+
+    try {
+
 
         const reelRef =
             ref(
@@ -118,17 +153,22 @@ export async function getReel(
             );
 
 
+
         const snapshot =
             await get(
                 reelRef
             );
 
 
-        if(!snapshot.exists()){
+
+        if(
+            !snapshot.exists()
+        ){
 
             return null;
 
         }
+
 
 
         return {
@@ -136,12 +176,15 @@ export async function getReel(
             id:
                 reelId,
 
+
             ...snapshot.val()
 
         };
 
 
-    }catch(error){
+    }
+    catch(error){
+
 
         console.error(
             "Get reel error:",
@@ -150,11 +193,15 @@ export async function getReel(
 
 
         throw new Error(
-            "Unable to load reel"
+            "Unable to load reel details. Please try again."
         );
+
+
     }
 
+
 }
+
 
 
 
@@ -162,40 +209,75 @@ export async function getReel(
 // =========================================
 // SAVE FEEDBACK
 // =========================================
+//
+// Saves:
+//
+// feedback_responses
+//      └── unique id
+//
+// =========================================
+
 
 export async function saveFeedback(
-    feedback
+    payload
 ){
 
-    try{
+
+    if(!database){
+
+        throw new Error(
+            "Firebase is not initialized."
+        );
+
+    }
+
+
+
+    try {
 
 
         const feedbackRef =
-            push(
-                ref(
-                    database,
-                    "feedback_responses"
-                )
+            ref(
+                database,
+                "feedback_responses"
             );
 
 
+
+        const newFeedback =
+            push(
+                feedbackRef
+            );
+
+
+
         await set(
-            feedbackRef,
+            newFeedback,
             {
 
-                ...feedback,
+                ...payload,
 
-                responseId:
-                    feedbackRef.key
+
+                serverCreatedAt:
+                    serverTimestamp()
 
             }
         );
 
 
-        return feedbackRef.key;
+
+        return {
+
+            success:true,
+
+            id:
+                newFeedback.key
+
+        };
 
 
-    }catch(error){
+    }
+    catch(error){
 
 
         console.error(
@@ -205,335 +287,11 @@ export async function saveFeedback(
 
 
         throw new Error(
-            "Unable to submit feedback"
+            "Feedback could not be submitted. Please try again."
         );
+
 
     }
 
-}
-
-
-
-
-
-// =========================================
-// GENERATE REEL ID
-// =========================================
-
-export async function generateReelId(){
-
-
-    const reelsRef =
-        ref(
-            database,
-            "reels"
-        );
-
-
-    const snapshot =
-        await get(
-            reelsRef
-        );
-
-
-    let count =
-        1;
-
-
-    if(snapshot.exists()){
-
-
-        count =
-            Object.keys(
-                snapshot.val()
-            ).length + 1;
-
-    }
-
-
-    return (
-        "RB" +
-        String(count)
-        .padStart(
-            3,
-            "0"
-        )
-    );
-
-}
-
-
-
-
-
-// =========================================
-// ADD REEL
-// =========================================
-
-export async function addReel(
-    reelData
-){
-
-    try{
-
-
-        const reelId =
-            await generateReelId();
-
-
-        const reelRef =
-            ref(
-                database,
-                `reels/${reelId}`
-            );
-
-
-
-        const data = {
-
-
-            reelId,
-
-
-            title:
-                reelData.title ||
-                "Rudra Bhakti Reel",
-
-
-            facebookUrl:
-                reelData.facebookUrl ||
-                "",
-
-
-            thumbnail:
-                reelData.thumbnail ||
-                "",
-
-
-            status:
-                "active",
-
-
-            createdAt:
-                Date.now(),
-
-
-            updatedAt:
-                Date.now(),
-
-
-            createdBy:
-                ADMIN_UID
-
-        };
-
-
-
-        await set(
-            reelRef,
-            data
-        );
-
-
-        return {
-
-            id:
-                reelId,
-
-            ...data
-
-        };
-
-
-    }catch(error){
-
-
-        console.error(
-            "Add reel error:",
-            error
-        );
-
-
-        throw new Error(
-            "Unable to add reel"
-        );
-
-    }
-
-}
-
-
-
-
-
-// =========================================
-// GET ALL REELS
-// =========================================
-
-export async function getAllReels(){
-
-
-    try{
-
-
-        const snapshot =
-            await get(
-                ref(
-                    database,
-                    "reels"
-                )
-            );
-
-
-
-        if(!snapshot.exists()){
-
-            return [];
-
-        }
-
-
-
-        return Object.entries(
-            snapshot.val()
-        )
-        .map(
-            ([id,data])=>({
-
-                id,
-
-                ...data
-
-            })
-        );
-
-
-
-    }catch(error){
-
-
-        console.error(
-            "Get reels error:",
-            error
-        );
-
-
-        throw new Error(
-            "Unable to load reels"
-        );
-
-    }
-
-}
-
-
-
-
-
-// =========================================
-// GET FEEDBACKS
-// =========================================
-
-export async function getAllFeedback(){
-
-
-    try{
-
-
-        const snapshot =
-            await get(
-                ref(
-                    database,
-                    "feedback_responses"
-                )
-            );
-
-
-        if(!snapshot.exists()){
-
-            return [];
-
-        }
-
-
-        return Object.entries(
-            snapshot.val()
-        )
-        .map(
-            ([id,data])=>({
-
-                id,
-
-                ...data
-
-            })
-        );
-
-
-    }catch(error){
-
-
-        console.error(
-            "Feedback load error:",
-            error
-        );
-
-
-        throw new Error(
-            "Unable to load feedback"
-        );
-
-    }
-
-}
-
-
-
-
-
-// =========================================
-// UPDATE REEL
-// =========================================
-
-export async function updateReel(
-    reelId,
-    updates
-){
-
-    await update(
-        ref(
-            database,
-            `reels/${reelId}`
-        ),
-        {
-
-            ...updates,
-
-            updatedAt:
-                Date.now()
-
-        }
-    );
-
-}
-
-
-
-
-
-// =========================================
-// DELETE REEL
-// =========================================
-
-export async function deleteReel(
-    reelId
-){
-
-    await remove(
-        ref(
-            database,
-            `reels/${reelId}`
-        )
-    );
 
 }
