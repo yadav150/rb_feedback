@@ -1,11 +1,11 @@
 {
   "name": "rudra-bhakti-functions",
-  "description": "Rudra Bhakti Firebase Cloud Functions",
+  "description": "Firebase Cloud Functions for Rudra Bhakti",
   "private": true,
-  "main": "index.js",
   "engines": {
-    "node": "22"
+    "node": "20"
   },
+  "main": "index.js",
   "scripts": {
     "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",
