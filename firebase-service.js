@@ -1,27 +1,36 @@
 // =========================================
 // RUDRA BHAKTI
 // FIREBASE SERVICE
-// Firebase Realtime Database
 // =========================================
 
+
+// Firebase imports
 import {
-    initializeApp,
-    getApps,
-    getApp
+    initializeApp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
 
 import {
     getDatabase,
     ref,
     get,
-    push,
     set,
-    serverTimestamp
+    push,
+    update,
+    remove,
+    query,
+    orderByChild
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
 
+// Auth imports
+import {
+    getAuth
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+
 // =========================================
-// FIREBASE CONFIGURATION
+// FIREBASE CONFIG
 // =========================================
 
 const firebaseConfig = {
@@ -53,55 +62,59 @@ const firebaseConfig = {
 
 
 // =========================================
-// INITIALIZE FIREBASE
+// INITIALIZE
 // =========================================
 
 const app =
-    getApps().length > 0
-        ? getApp()
-        : initializeApp(firebaseConfig);
+    initializeApp(firebaseConfig);
 
 
-const db =
+const database =
     getDatabase(app);
 
 
+const auth =
+    getAuth(app);
+
+
+
+export {
+    database,
+    auth
+};
+
+
+
 // =========================================
-// LOAD REEL
-// Path:
-// reels/{reelId}
+// CONSTANT
+// =========================================
+
+const ADMIN_UID =
+    "CEozlrvQkuMUox2gKTlQOzdc3ZS2";
+
+
+
+// =========================================
+// GET REEL
 // =========================================
 
 export async function getReel(
     reelId
-) {
+){
 
-    if (!reelId) {
-
+    if(!reelId){
         throw new Error(
-            "Reel ID is missing."
+            "Reel ID missing"
         );
     }
 
 
-    const cleanReelId =
-        String(reelId).trim();
-
-
-    if (!cleanReelId) {
-
-        throw new Error(
-            "Invalid Reel ID."
-        );
-    }
-
-
-    try {
+    try{
 
         const reelRef =
             ref(
-                db,
-                `reels/${cleanReelId}`
+                database,
+                `reels/${reelId}`
             );
 
 
@@ -111,391 +124,416 @@ export async function getReel(
             );
 
 
-        if (!snapshot.exists()) {
+        if(!snapshot.exists()){
 
             return null;
+
         }
 
 
-        const data =
-            snapshot.val();
+        return {
+
+            id:
+                reelId,
+
+            ...snapshot.val()
+
+        };
 
 
-        return normalizeReel(
-            data,
-            cleanReelId
-        );
-
-    } catch (error) {
+    }catch(error){
 
         console.error(
-            "Firebase reel loading error:",
+            "Get reel error:",
             error
         );
 
 
         throw new Error(
-            "Unable to load this reel right now. Please try again."
-        );
-    }
-}
-
-
-// =========================================
-// NORMALIZE REEL DATA
-// Supports multiple possible field names
-// =========================================
-
-function normalizeReel(
-    data,
-    reelId
-) {
-
-    if (
-        !data ||
-        typeof data !== "object"
-    ) {
-
-        return null;
-    }
-
-
-    return {
-
-        reelId:
-
-            data.reelId ||
-            data.id ||
-            reelId,
-
-
-        title:
-
-            data.title ||
-            data.reelTitle ||
-            data.name ||
-            "Rudra Bhakti Reel",
-
-
-        facebookUrl:
-
-            data.facebookUrl ||
-            data.facebookURL ||
-            data.postUrl ||
-            data.url ||
-            "",
-
-
-        thumbnail:
-
-            data.thumbnail ||
-            data.thumbnailUrl ||
-            data.image ||
-            data.imageUrl ||
-            "",
-
-
-        questions:
-
-            normalizeQuestions(
-                data.questions
-            ),
-
-
-        createdAt:
-            data.createdAt ||
-            null,
-
-
-        updatedAt:
-            data.updatedAt ||
-            null
-    };
-}
-
-
-// =========================================
-// NORMALIZE QUESTIONS
-// =========================================
-
-function normalizeQuestions(
-    questions
-) {
-
-    if (!questions) {
-
-        return null;
-    }
-
-
-    if (
-        Array.isArray(
-            questions
-        )
-    ) {
-
-        return questions;
-    }
-
-
-    if (
-        typeof questions === "object"
-    ) {
-
-        return Object.entries(
-            questions
-        ).map(
-            ([key, value]) => {
-
-                if (
-                    typeof value === "string"
-                ) {
-
-                    return {
-
-                        id:
-                            key,
-
-                        text:
-                            value,
-
-                        options:
-                            []
-                    };
-                }
-
-
-                return {
-
-                    id:
-                        value?.id ||
-                        key,
-
-                    text:
-                        value?.text ||
-                        value?.question ||
-                        "",
-
-                    hindi:
-                        value?.hindi ||
-                        "",
-
-                    helper:
-                        value?.helper ||
-                        "",
-
-                    options:
-                        normalizeOptions(
-                            value?.options
-                        )
-                };
-            }
+            "Unable to load reel"
         );
     }
 
-
-    return null;
 }
 
 
-// =========================================
-// NORMALIZE OPTIONS
-// =========================================
-
-function normalizeOptions(
-    options
-) {
-
-    if (!options) {
-        return [];
-    }
-
-
-    if (
-        Array.isArray(
-            options
-        )
-    ) {
-
-        return options.map(
-            (option, index) => {
-
-                if (
-                    typeof option === "string"
-                ) {
-
-                    return {
-
-                        id:
-                            `OPTION_${index + 1}`,
-
-                        label:
-                            option
-                    };
-                }
-
-
-                return {
-
-                    id:
-                        option?.id ||
-                        `OPTION_${index + 1}`,
-
-                    label:
-                        option?.label ||
-                        option?.text ||
-                        ""
-                };
-            }
-        );
-    }
-
-
-    if (
-        typeof options === "object"
-    ) {
-
-        return Object.entries(
-            options
-        ).map(
-            ([key, value]) => {
-
-                if (
-                    typeof value === "string"
-                ) {
-
-                    return {
-
-                        id:
-                            key,
-
-                        label:
-                            value
-                    };
-                }
-
-
-                return {
-
-                    id:
-                        value?.id ||
-                        key,
-
-                    label:
-                        value?.label ||
-                        value?.text ||
-                        ""
-                };
-            }
-        );
-    }
-
-
-    return [];
-}
 
 
 // =========================================
 // SAVE FEEDBACK
-// Path:
-// feedback_responses/{generatedId}
 // =========================================
 
 export async function saveFeedback(
     feedback
-) {
+){
 
-    if (
-        !feedback ||
-        typeof feedback !== "object"
-    ) {
-
-        throw new Error(
-            "Invalid feedback data."
-        );
-    }
+    try{
 
 
-    if (!feedback.reelId) {
-
-        throw new Error(
-            "Reel ID is missing."
-        );
-    }
-
-
-    try {
-
-        const responsesRef =
-            ref(
-                db,
-                "feedback_responses"
-            );
-
-
-        const newResponseRef =
+        const feedbackRef =
             push(
-                responsesRef
+                ref(
+                    database,
+                    "feedback_responses"
+                )
             );
-
-
-        const responseId =
-            newResponseRef.key;
-
-
-        if (!responseId) {
-
-            throw new Error(
-                "Unable to create feedback ID."
-            );
-        }
-
-
-        const payload = {
-
-            ...feedback,
-
-            responseId,
-
-            createdAt:
-                serverTimestamp()
-        };
 
 
         await set(
-            newResponseRef,
-            payload
+            feedbackRef,
+            {
+
+                ...feedback,
+
+                responseId:
+                    feedbackRef.key
+
+            }
+        );
+
+
+        return feedbackRef.key;
+
+
+    }catch(error){
+
+
+        console.error(
+            "Save feedback error:",
+            error
+        );
+
+
+        throw new Error(
+            "Unable to submit feedback"
+        );
+
+    }
+
+}
+
+
+
+
+
+// =========================================
+// GENERATE REEL ID
+// =========================================
+
+export async function generateReelId(){
+
+
+    const reelsRef =
+        ref(
+            database,
+            "reels"
+        );
+
+
+    const snapshot =
+        await get(
+            reelsRef
+        );
+
+
+    let count =
+        1;
+
+
+    if(snapshot.exists()){
+
+
+        count =
+            Object.keys(
+                snapshot.val()
+            ).length + 1;
+
+    }
+
+
+    return (
+        "RB" +
+        String(count)
+        .padStart(
+            3,
+            "0"
+        )
+    );
+
+}
+
+
+
+
+
+// =========================================
+// ADD REEL
+// =========================================
+
+export async function addReel(
+    reelData
+){
+
+    try{
+
+
+        const reelId =
+            await generateReelId();
+
+
+        const reelRef =
+            ref(
+                database,
+                `reels/${reelId}`
+            );
+
+
+
+        const data = {
+
+
+            reelId,
+
+
+            title:
+                reelData.title ||
+                "Rudra Bhakti Reel",
+
+
+            facebookUrl:
+                reelData.facebookUrl ||
+                "",
+
+
+            thumbnail:
+                reelData.thumbnail ||
+                "",
+
+
+            status:
+                "active",
+
+
+            createdAt:
+                Date.now(),
+
+
+            updatedAt:
+                Date.now(),
+
+
+            createdBy:
+                ADMIN_UID
+
+        };
+
+
+
+        await set(
+            reelRef,
+            data
         );
 
 
         return {
 
-            success:
-                true,
+            id:
+                reelId,
 
-            responseId
+            ...data
+
         };
 
-    } catch (error) {
+
+    }catch(error){
+
 
         console.error(
-            "Firebase feedback save error:",
+            "Add reel error:",
             error
         );
 
 
         throw new Error(
-            "Your feedback could not be submitted. Please try again."
+            "Unable to add reel"
         );
+
     }
+
 }
 
 
+
+
+
 // =========================================
-// EXPORT DATABASE
-// Useful for future admin files
+// GET ALL REELS
 // =========================================
 
-export {
-    db
-};
+export async function getAllReels(){
+
+
+    try{
+
+
+        const snapshot =
+            await get(
+                ref(
+                    database,
+                    "reels"
+                )
+            );
+
+
+
+        if(!snapshot.exists()){
+
+            return [];
+
+        }
+
+
+
+        return Object.entries(
+            snapshot.val()
+        )
+        .map(
+            ([id,data])=>({
+
+                id,
+
+                ...data
+
+            })
+        );
+
+
+
+    }catch(error){
+
+
+        console.error(
+            "Get reels error:",
+            error
+        );
+
+
+        throw new Error(
+            "Unable to load reels"
+        );
+
+    }
+
+}
+
+
+
+
+
+// =========================================
+// GET FEEDBACKS
+// =========================================
+
+export async function getAllFeedback(){
+
+
+    try{
+
+
+        const snapshot =
+            await get(
+                ref(
+                    database,
+                    "feedback_responses"
+                )
+            );
+
+
+        if(!snapshot.exists()){
+
+            return [];
+
+        }
+
+
+        return Object.entries(
+            snapshot.val()
+        )
+        .map(
+            ([id,data])=>({
+
+                id,
+
+                ...data
+
+            })
+        );
+
+
+    }catch(error){
+
+
+        console.error(
+            "Feedback load error:",
+            error
+        );
+
+
+        throw new Error(
+            "Unable to load feedback"
+        );
+
+    }
+
+}
+
+
+
+
+
+// =========================================
+// UPDATE REEL
+// =========================================
+
+export async function updateReel(
+    reelId,
+    updates
+){
+
+    await update(
+        ref(
+            database,
+            `reels/${reelId}`
+        ),
+        {
+
+            ...updates,
+
+            updatedAt:
+                Date.now()
+
+        }
+    );
+
+}
+
+
+
+
+
+// =========================================
+// DELETE REEL
+// =========================================
+
+export async function deleteReel(
+    reelId
+){
+
+    await remove(
+        ref(
+            database,
+            `reels/${reelId}`
+        )
+    );
+
+}
