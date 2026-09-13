@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
@@ -21,29 +20,16 @@
 <body>
 
     <!-- =========================
-         LOGIN SECTION
+         LOGIN
     ========================== -->
+
     <section id="login-section" class="login-section">
 
         <div class="login-card">
 
             <div class="login-brand">
-                <div class="brand-mark" aria-hidden="true">
-                    <svg
-                        viewBox="0 0 24 24"
-                        width="28"
-                        height="28"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <path d="M12 3v18"></path>
-                        <path d="M8 7h8"></path>
-                        <path d="M7 12h10"></path>
-                        <path d="M9 17h6"></path>
-                    </svg>
+                <div class="brand-mark">
+                    RB
                 </div>
 
                 <div>
@@ -52,17 +38,21 @@
                 </div>
             </div>
 
-            <form id="login-form" class="login-form">
+            <div class="login-heading">
+                <h2>Admin Login</h2>
+                <p>Sign in to manage reels and analytics.</p>
+            </div>
+
+            <form id="login-form">
 
                 <div class="form-group">
                     <label for="admin-email">
-                        Email
+                        Email Address
                     </label>
 
                     <input
                         type="email"
                         id="admin-email"
-                        name="email"
                         autocomplete="email"
                         required
                     >
@@ -76,7 +66,6 @@
                     <input
                         type="password"
                         id="admin-password"
-                        name="password"
                         autocomplete="current-password"
                         required
                     >
@@ -84,24 +73,23 @@
 
                 <div
                     id="login-error"
-                    class="form-message error-message"
-                    role="alert"
-                    aria-live="polite"
+                    class="form-message error"
+                    hidden
                 ></div>
 
                 <button
                     type="submit"
                     id="login-button"
-                    class="primary-button"
+                    class="primary-button full-width"
                 >
                     <span id="login-button-text">
-                        Login
+                        Sign In
                     </span>
 
                     <span
                         id="login-spinner"
                         class="button-spinner"
-                        aria-hidden="true"
+                        hidden
                     ></span>
                 </button>
 
@@ -113,74 +101,79 @@
 
 
     <!-- =========================
-         DASHBOARD SECTION
+         DASHBOARD
     ========================== -->
+
     <section
         id="dashboard-section"
-        class="dashboard-section hidden"
+        class="dashboard-section"
+        hidden
     >
 
         <!-- HEADER -->
+
         <header class="admin-header">
 
             <div class="header-left">
 
                 <button
-                    id="mobile-menu-button"
-                    class="icon-button"
                     type="button"
+                    id="mobile-menu-button"
+                    class="mobile-menu-button"
                     aria-label="Open menu"
                 >
                     <svg
                         viewBox="0 0 24 24"
-                        width="22"
-                        height="22"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
+                        aria-hidden="true"
                     >
-                        <path d="M4 6h16"></path>
-                        <path d="M4 12h16"></path>
-                        <path d="M4 18h16"></path>
+                        <path
+                            d="M4 7h16M4 12h16M4 17h16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
                     </svg>
                 </button>
 
                 <div class="header-brand">
                     <strong>Rudra Bhakti</strong>
-                    <span>Admin</span>
+                    <span>Admin Dashboard</span>
                 </div>
 
             </div>
 
             <div class="header-right">
 
-                <div
-                    id="admin-session-status"
-                    class="session-status"
-                >
-                    <span class="status-dot"></span>
-                    <span>Admin</span>
-                </div>
+                <span id="admin-session-status">
+                    Admin
+                </span>
 
                 <button
+                    type="button"
                     id="logout-button"
                     class="logout-button"
-                    type="button"
                 >
                     <svg
                         viewBox="0 0 24 24"
-                        width="18"
-                        height="18"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        aria-hidden="true"
                     >
-                        <path d="M10 17l5-5-5-5"></path>
-                        <path d="M15 12H3"></path>
-                        <path d="M21 19V5"></path>
+                        <path
+                            d="M10 5H6.5A1.5 1.5 0 0 0 5 6.5v11A1.5 1.5 0 0 0 6.5 19H10"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                        />
+
+                        <path
+                            d="M13 8l4 4-4 4M9 12h8"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
                     </svg>
 
                     <span>Logout</span>
@@ -192,17 +185,32 @@
 
 
         <!-- OVERLAY -->
+
         <div
             id="admin-overlay"
             class="admin-overlay"
+            hidden
         ></div>
 
 
         <!-- SIDEBAR -->
+
         <aside
             id="admin-sidebar"
             class="admin-sidebar"
         >
+
+            <div class="sidebar-brand">
+                <div class="sidebar-logo">
+                    RB
+                </div>
+
+                <div>
+                    <strong>Rudra Bhakti</strong>
+                    <span>Management</span>
+                </div>
+            </div>
+
 
             <nav class="admin-nav">
 
@@ -213,19 +221,24 @@
                 >
                     <svg
                         viewBox="0 0 24 24"
-                        width="19"
-                        height="19"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        aria-hidden="true"
                     >
-                        <path d="M4 19V5"></path>
-                        <path d="M4 19h16"></path>
-                        <path d="M8 16v-5"></path>
-                        <path d="M12 16V8"></path>
-                        <path d="M16 16v-9"></path>
+                        <path
+                            d="M4 19V5M4 19h16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                        />
+
+                        <path
+                            d="M7 15l3-4 3 2 5-6"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
                     </svg>
 
                     <span>Analysis</span>
@@ -239,24 +252,15 @@
                 >
                     <svg
                         viewBox="0 0 24 24"
-                        width="19"
-                        height="19"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        aria-hidden="true"
                     >
-                        <rect
-                            x="3"
-                            y="3"
-                            width="18"
-                            height="18"
-                            rx="3"
-                        ></rect>
-
-                        <path d="M12 8v8"></path>
-                        <path d="M8 12h8"></path>
+                        <path
+                            d="M12 5v14M5 12h14"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                        />
                     </svg>
 
                     <span>Add Reel</span>
@@ -270,23 +274,30 @@
         <!-- =========================
              MAIN CONTENT
         ========================== -->
+
         <main class="admin-main">
 
 
             <!-- =====================
                  ANALYSIS
             ====================== -->
+
             <section
                 id="analysis-section"
-                class="admin-content-section"
+                class="admin-section"
             >
 
                 <div class="section-heading">
 
                     <div>
-                        <h2>Analytics Dashboard</h2>
+                        <span class="section-eyebrow">
+                            Insights
+                        </span>
+
+                        <h1>Analytics Dashboard</h1>
+
                         <p>
-                            Review feedback and reel performance.
+                            Understand how viewers respond to your reels.
                         </p>
                     </div>
 
@@ -308,6 +319,7 @@
 
 
                 <!-- METRICS -->
+
                 <div class="metrics-grid">
 
                     <article class="metric-card">
@@ -333,14 +345,14 @@
                             id="metric-average-rating"
                             class="metric-value"
                         >
-                            0
+                            —
                         </strong>
                     </article>
 
 
                     <article class="metric-card">
                         <span class="metric-label">
-                            More Content
+                            Want More Content
                         </span>
 
                         <strong
@@ -369,61 +381,54 @@
 
 
                 <!-- REEL PERFORMANCE -->
-                <div class="analytics-card">
+
+                <div class="analysis-card">
 
                     <div class="card-heading">
                         <div>
-                            <h3>Reel Performance</h3>
+                            <h2>Reel Performance</h2>
+
                             <p>
-                                Response performance by reel.
+                                Response activity across your reels.
                             </p>
                         </div>
                     </div>
 
                     <div
                         id="reel-performance-list"
-                        class="analytics-list"
+                        class="analysis-list"
                     ></div>
 
                 </div>
 
 
                 <!-- FEELING + RATING -->
-                <div class="analytics-grid">
 
-                    <div class="analytics-card">
+                <div class="analysis-grid">
+
+                    <div class="analysis-card">
 
                         <div class="card-heading">
-                            <div>
-                                <h3>Feeling Analysis</h3>
-                                <p>
-                                    Viewer emotional response.
-                                </p>
-                            </div>
+                            <h2>Viewer Feeling</h2>
                         </div>
 
                         <div
                             id="feeling-analysis"
-                            class="analytics-list"
+                            class="analysis-list"
                         ></div>
 
                     </div>
 
 
-                    <div class="analytics-card">
+                    <div class="analysis-card">
 
                         <div class="card-heading">
-                            <div>
-                                <h3>Rating Analysis</h3>
-                                <p>
-                                    Viewer rating distribution.
-                                </p>
-                            </div>
+                            <h2>Rating Distribution</h2>
                         </div>
 
                         <div
                             id="rating-analysis"
-                            class="analytics-list"
+                            class="analysis-list"
                         ></div>
 
                     </div>
@@ -432,43 +437,52 @@
 
 
                 <!-- PSYCHOLOGY -->
-                <div class="analytics-card">
+
+                <div class="analysis-card">
 
                     <div class="card-heading">
+
                         <div>
-                            <h3>Psychology Analytics</h3>
+                            <h2>Psychology Analysis</h2>
+
                             <p>
-                                Audience response patterns and
-                                connection indicators.
+                                Viewer connection and emotional response.
                             </p>
                         </div>
+
                     </div>
 
                     <div
                         id="psychology-analysis"
-                        class="analytics-list"
+                        class="analysis-content"
                     ></div>
 
                 </div>
 
 
                 <!-- ENGAGEMENT -->
-                <div class="analytics-card">
+
+                <div class="analysis-card">
 
                     <div class="card-heading">
+
                         <div>
-                            <h3>Engagement Analytics</h3>
+                            <h2>Engagement Analysis</h2>
+
                             <p>
-                                Response timing and completion.
+                                Response timing and completion behaviour.
                             </p>
                         </div>
+
                     </div>
+
 
                     <div class="metrics-grid compact">
 
                         <article class="metric-card">
+
                             <span class="metric-label">
-                                Avg. Response Time
+                                Average Response Time
                             </span>
 
                             <strong
@@ -477,10 +491,12 @@
                             >
                                 —
                             </strong>
+
                         </article>
 
 
                         <article class="metric-card">
+
                             <span class="metric-label">
                                 Fastest Response
                             </span>
@@ -491,10 +507,12 @@
                             >
                                 —
                             </strong>
+
                         </article>
 
 
                         <article class="metric-card">
+
                             <span class="metric-label">
                                 Slowest Response
                             </span>
@@ -505,10 +523,12 @@
                             >
                                 —
                             </strong>
+
                         </article>
 
 
                         <article class="metric-card">
+
                             <span class="metric-label">
                                 Answer Completion
                             </span>
@@ -519,6 +539,7 @@
                             >
                                 —
                             </strong>
+
                         </article>
 
                     </div>
@@ -526,27 +547,31 @@
 
                     <div
                         id="engagement-analysis"
-                        class="analytics-list"
+                        class="analysis-content"
                     ></div>
 
                 </div>
 
 
                 <!-- RECOMMENDATIONS -->
-                <div class="analytics-card">
+
+                <div class="analysis-card">
 
                     <div class="card-heading">
+
                         <div>
-                            <h3>Recommendations</h3>
+                            <h2>Recommendations</h2>
+
                             <p>
-                                Insights generated from feedback.
+                                Data-based suggestions from viewer responses.
                             </p>
                         </div>
+
                     </div>
 
                     <div
                         id="recommendations"
-                        class="recommendations-list"
+                        class="analysis-content"
                     ></div>
 
                 </div>
@@ -554,50 +579,67 @@
             </section>
 
 
+
             <!-- =====================
                  ADD REEL
             ====================== -->
+
             <section
                 id="add-reel-section"
-                class="admin-content-section hidden"
+                class="admin-section"
+                hidden
             >
 
                 <div class="section-heading">
 
                     <div>
-                        <h2>Add New Reel</h2>
+                        <span class="section-eyebrow">
+                            Content Management
+                        </span>
+
+                        <h1>Add New Reel</h1>
 
                         <p>
-                            Add a Facebook Reel and create its
-                            feedback page.
+                            Add a Facebook Reel and generate its feedback link.
                         </p>
                     </div>
 
                 </div>
 
 
-                <!-- ADD REEL FORM -->
-                <div class="form-card">
+                <div class="add-reel-layout">
 
-                    <form id="add-reel-form">
 
-                        <!-- FACEBOOK URL -->
-                        <div class="form-group">
+                    <!-- FORM -->
 
-                            <label for="facebook-url">
-                                Facebook Reel URL
-                            </label>
+                    <div class="admin-card add-reel-card">
 
-                            <div class="input-action-row">
+                        <form id="add-reel-form">
+
+                            <div class="form-group">
+
+                                <label for="facebook-url">
+                                    Facebook Reel URL
+                                </label>
 
                                 <input
                                     type="url"
                                     id="facebook-url"
-                                    name="facebookUrl"
                                     placeholder="https://www.facebook.com/reel/..."
                                     autocomplete="off"
                                     required
                                 >
+
+                                <small class="input-help">
+                                    Paste the Facebook Reel URL. Metadata can be fetched automatically.
+                                </small>
+
+                            </div>
+
+
+                            <!-- METADATA FETCH -->
+
+                            <div class="metadata-fetch-row">
 
                                 <button
                                     type="button"
@@ -606,155 +648,163 @@
                                 >
 
                                     <span
-                                        id="fetch-metadata-spinner"
-                                        class="button-spinner"
-                                        aria-hidden="true"
-                                    ></span>
-
-                                    <svg
                                         id="fetch-metadata-icon"
-                                        viewBox="0 0 24 24"
-                                        width="17"
-                                        height="17"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="1.8"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        aria-hidden="true"
+                                        class="fetch-icon"
                                     >
-                                        <path d="M12 3v12"></path>
-                                        <path d="M7 10l5 5 5-5"></path>
-                                        <path d="M5 21h14"></path>
-                                    </svg>
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M12 4v10M8 10l4 4 4-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+
+                                            <path
+                                                d="M5 19h14"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linecap="round"
+                                            />
+                                        </svg>
+                                    </span>
 
                                     <span id="fetch-metadata-text">
-                                        Fetch Details
+                                        Fetch Reel Metadata
                                     </span>
+
+                                    <span
+                                        id="fetch-metadata-spinner"
+                                        class="button-spinner"
+                                        hidden
+                                    ></span>
 
                                 </button>
 
                             </div>
 
-                            <small class="field-help">
-                                Fetch the Reel title and thumbnail
-                                from Facebook.
-                            </small>
 
-                        </div>
+                            <div
+                                id="metadata-status"
+                                class="metadata-status"
+                                hidden
+                            ></div>
 
 
-                        <!-- TITLE -->
-                        <div class="form-group">
+                            <!-- TITLE -->
 
-                            <label for="reel-title-input">
-                                Reel Title
-                            </label>
+                            <div class="form-group">
 
-                            <input
-                                type="text"
-                                id="reel-title-input"
-                                name="title"
-                                placeholder="Reel title"
-                                autocomplete="off"
-                                required
+                                <label for="reel-title-input">
+                                    Reel Title
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="reel-title-input"
+                                    placeholder="Reel title"
+                                    autocomplete="off"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <!-- THUMBNAIL -->
+
+                            <div class="form-group">
+
+                                <label for="thumbnail-url">
+                                    Thumbnail URL
+                                </label>
+
+                                <input
+                                    type="url"
+                                    id="thumbnail-url"
+                                    placeholder="https://..."
+                                    autocomplete="off"
+                                >
+
+                                <small class="input-help">
+                                    The fetched Facebook thumbnail will appear here when available.
+                                </small>
+
+                            </div>
+
+
+                            <!-- ERROR -->
+
+                            <div
+                                id="reel-form-error"
+                                class="form-message error"
+                                hidden
+                            ></div>
+
+
+                            <!-- SUCCESS -->
+
+                            <div
+                                id="reel-form-success"
+                                class="form-message success"
+                                hidden
+                            ></div>
+
+
+                            <!-- SAVE -->
+
+                            <button
+                                type="submit"
+                                id="save-reel-button"
+                                class="primary-button full-width"
                             >
 
-                        </div>
+                                <span id="save-reel-button-text">
+                                    Add Reel
+                                </span>
 
+                                <span
+                                    id="save-reel-spinner"
+                                    class="button-spinner"
+                                    hidden
+                                ></span>
 
-                        <!-- THUMBNAIL -->
-                        <div class="form-group">
+                            </button>
 
-                            <label for="thumbnail-url">
-                                Thumbnail URL
-                            </label>
-
-                            <input
-                                type="url"
-                                id="thumbnail-url"
-                                name="thumbnail"
-                                placeholder="https://..."
-                                autocomplete="off"
-                            >
-
-                        </div>
-
-
-                        <!-- METADATA STATUS -->
-                        <div
-                            id="metadata-status"
-                            class="metadata-status"
-                            aria-live="polite"
-                        ></div>
-
-
-                        <!-- FORM ERROR -->
-                        <div
-                            id="reel-form-error"
-                            class="form-message error-message"
-                            role="alert"
-                            aria-live="polite"
-                        ></div>
-
-
-                        <!-- FORM SUCCESS -->
-                        <div
-                            id="reel-form-success"
-                            class="form-message success-message"
-                            role="status"
-                            aria-live="polite"
-                        ></div>
-
-
-                        <!-- SAVE -->
-                        <button
-                            type="submit"
-                            id="save-reel-button"
-                            class="primary-button"
-                        >
-
-                            <span
-                                id="save-reel-spinner"
-                                class="button-spinner"
-                                aria-hidden="true"
-                            ></span>
-
-                            <span id="save-reel-button-text">
-                                Add Reel
-                            </span>
-
-                        </button>
-
-                    </form>
-
-                </div>
-
-
-                <!-- GENERATED LINK -->
-                <div
-                    id="generated-link-card"
-                    class="generated-link-card hidden"
-                >
-
-                    <div class="card-heading">
-
-                        <div>
-                            <h3>Feedback Page Created</h3>
-                            <p>
-                                Use this link to open the public
-                                feedback page.
-                            </p>
-                        </div>
+                        </form>
 
                     </div>
 
 
-                    <div class="generated-reel-info">
 
-                        <div class="generated-item">
+                    <!-- GENERATED LINK -->
 
-                            <span class="generated-label">
+                    <div
+                        id="generated-link-card"
+                        class="admin-card generated-link-card"
+                        hidden
+                    >
+
+                        <div class="card-heading">
+
+                            <div>
+                                <span class="section-eyebrow">
+                                    Generated
+                                </span>
+
+                                <h2>Feedback Link</h2>
+                            </div>
+
+                        </div>
+
+
+                        <div class="generated-reel-id-box">
+
+                            <span>
                                 Reel ID
                             </span>
 
@@ -765,13 +815,13 @@
                         </div>
 
 
-                        <div class="generated-item">
+                        <div class="generated-url-box">
 
-                            <span class="generated-label">
-                                Feedback URL
-                            </span>
+                            <label for="generated-feedback-url">
+                                Public Feedback URL
+                            </label>
 
-                            <div class="generated-url-row">
+                            <div class="copy-url-row">
 
                                 <input
                                     type="text"
@@ -782,34 +832,31 @@
                                 <button
                                     type="button"
                                     id="copy-feedback-url"
-                                    class="secondary-button"
+                                    class="icon-button"
                                     aria-label="Copy feedback URL"
                                 >
                                     <svg
                                         viewBox="0 0 24 24"
-                                        width="17"
-                                        height="17"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="1.8"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
                                         aria-hidden="true"
                                     >
                                         <rect
                                             x="8"
                                             y="8"
-                                            width="12"
-                                            height="12"
+                                            width="11"
+                                            height="11"
                                             rx="2"
-                                        ></rect>
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="1.7"
+                                        />
 
                                         <path
-                                            d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"
-                                        ></path>
+                                            d="M16 8V6.5A1.5 1.5 0 0 0 14.5 5h-8A1.5 1.5 0 0 0 5 6.5v8A1.5 1.5 0 0 0 6.5 16H8"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="1.7"
+                                        />
                                     </svg>
-
-                                    <span>Copy</span>
                                 </button>
 
                             </div>
@@ -821,25 +868,35 @@
                 </div>
 
 
-                <!-- ADDED REELS TABLE -->
-                <div class="analytics-card added-reels-card">
 
-                    <div class="card-heading">
+                <!-- =====================
+                     ADDED REELS TABLE
+                ====================== -->
+
+                <div class="admin-card added-reels-card">
+
+                    <div class="card-heading reels-table-heading">
 
                         <div>
-                            <h3>Added Reels</h3>
+
+                            <span class="section-eyebrow">
+                                Reel Library
+                            </span>
+
+                            <h2>Added Reels</h2>
 
                             <p>
-                                All reels currently available on
-                                the feedback system.
+                                All reels added to your Firebase database.
                             </p>
+
                         </div>
 
-                        <div
-                            id="added-reels-count"
-                            class="table-count"
-                        >
-                            0 Reels
+
+                        <div class="reels-count">
+                            <span id="added-reels-count">
+                                0
+                            </span>
+                            <span>Reels</span>
                         </div>
 
                     </div>
@@ -850,6 +907,7 @@
                         <table class="reels-table">
 
                             <thead>
+
                                 <tr>
                                     <th>Reel ID</th>
                                     <th>Title</th>
@@ -857,15 +915,14 @@
                                     <th>Status</th>
                                     <th>Added</th>
                                 </tr>
+
                             </thead>
 
                             <tbody id="added-reels-table-body">
 
                                 <tr class="table-empty-row">
 
-                                    <td
-                                        colspan="5"
-                                    >
+                                    <td colspan="5">
                                         No reels added yet.
                                     </td>
 
@@ -889,19 +946,20 @@
     <!-- =========================
          TOAST
     ========================== -->
+
     <div
         id="admin-toast"
         class="admin-toast"
         role="status"
         aria-live="polite"
-    >
-        <span id="admin-toast-message"></span>
-    </div>
+        hidden
+    ></div>
 
 
     <!-- =========================
-         ADMIN JS
+         FIREBASE / ADMIN SCRIPT
     ========================== -->
+
     <script
         type="module"
         src="admin.js"
